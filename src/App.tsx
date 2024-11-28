@@ -7,6 +7,7 @@ import {
   Welcome,
   useXAgent,
   useXChat,
+  XProvider,
 } from '@ant-design/x';
 import { createStyles } from 'antd-style';
 import React, { useEffect } from 'react';
@@ -315,7 +316,8 @@ const Independent: React.FC = () => {
 
   // ==================== Render =================
   return (
-    <div className={styles.layout}>
+    <XProvider theme={{ token: {colorPrimary: '#ff4a4a'} }}>
+      <div className={styles.layout}>
       <div className={styles.menu}>
         {/* 🌟 Logo */}
         {logoNode}
@@ -354,6 +356,7 @@ const Independent: React.FC = () => {
         />
       </div>
     </div>
+    </XProvider>
   );
 };
 
