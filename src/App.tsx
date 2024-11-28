@@ -10,6 +10,7 @@ import {
 } from '@ant-design/x';
 import { createStyles } from 'antd-style';
 import React, { useEffect } from 'react';
+import './App.css'
 
 import {
   CloudUploadOutlined,
@@ -44,7 +45,7 @@ const useStyle = createStyles(({ token, css }) => {
     layout: css`
       width: 100%;
       min-width: 1000px;
-      height: 722px;
+      height: 100vh;
       border-radius: ${token.borderRadius}px;
       display: flex;
       background: ${token.colorBgContainer};
