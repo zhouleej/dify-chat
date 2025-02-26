@@ -9,8 +9,8 @@ dependencies:
     specifier: ^5.5.1
     version: 5.5.1(react-dom@18.3.1)(react@18.3.1)
   '@ant-design/x':
-    specifier: ^1.0.0
-    version: 1.0.0(antd@5.22.2)(react-dom@18.3.1)(react@18.3.1)
+    specifier: ^1.0.5
+    version: 1.0.5(antd@5.22.2)(react-dom@18.3.1)(react@18.3.1)
   antd:
     specifier: ^5.22.2
     version: 5.22.2(react-dom@18.3.1)(react@18.3.1)
@@ -166,8 +166,8 @@ packages:
       throttle-debounce: 5.0.2
     dev: false
 
-  /@ant-design/x@1.0.0(antd@5.22.2)(react-dom@18.3.1)(react@18.3.1):
-    resolution: {integrity: sha512-XqiCRXPVYWGbF05wsAb2gH0wtU4gPflL4QEoacpCT9XoM6jc0PVkAbjcVW3mg9M6nkMDLEZ9l7def3b65gQi5A==}
+  /@ant-design/x@1.0.5(antd@5.22.2)(react-dom@18.3.1)(react@18.3.1):
+    resolution: {integrity: sha512-St+JqVa6VNDTDjsn79O+GN6hG2rxZ1Skksjbfzn9JFkHNXXBQ+7SK+Vh2lDaZi48IzLPhaiBzFu+D8/4mgw2Ww==}
     peerDependencies:
       antd: '>=5.0.0'
       react: '>=18.0.0'
@@ -179,7 +179,6 @@ packages:
       '@ant-design/fast-color': 2.0.6
       '@ant-design/icons': 5.5.1(react-dom@18.3.1)(react@18.3.1)
       '@babel/runtime': 7.26.0
-      '@ctrl/tinycolor': 4.1.0
       antd: 5.22.2(react-dom@18.3.1)(react@18.3.1)
       classnames: 2.5.1
       rc-motion: 2.9.3(react-dom@18.3.1)(react@18.3.1)
@@ -278,11 +277,6 @@ packages:
   /@ctrl/tinycolor@3.6.1:
     resolution: {integrity: sha512-SITSV6aIXsuVNV3f3O0f2n/cgyEDWoSqtZMYiAmcsYHydcKrOz3gUxB/iXd/Qf08+IZX4KpgNbvUdMBmWz+kcA==}
     engines: {node: '>=10'}
-    dev: false
-
-  /@ctrl/tinycolor@4.1.0:
-    resolution: {integrity: sha512-WyOx8cJQ+FQus4Mm4uPIZA64gbk3Wxh0so5Lcii0aJifqwoVOlfFtorjLE0Hen4OYyHZMXDWqMmaQemBhgxFRQ==}
-    engines: {node: '>=14'}
     dev: false
 
   /@emotion/babel-plugin@11.13.5:
