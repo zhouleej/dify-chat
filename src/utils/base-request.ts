@@ -54,5 +54,5 @@ export class XRequest {
 export default XRequest
 
 export const baseRequest = new XRequest({
-  baseURL: `${process.env.DIFY_API_BASE}${process.env.DIFY_API_VERSION}`,
+	baseURL: process.env.DIFY_API_VERSION!,
 })
