@@ -31,7 +31,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Form, FormItemProps, type GetProp, Input, Select, Space, Typography } from 'antd';
 import markdownit from 'markdown-it';
-import { difyApi } from './utils/dify-api';
+import { createDifyApiInstance } from './utils/dify-api';
 import { RESPONSE_MODE, USER } from './config';
 import { MessageInfo } from '@ant-design/x/es/useXChat';
 
@@ -152,6 +152,9 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
     avatar: { icon: <UserOutlined />, style: { background: '#87d068' } },
   },
 };
+
+// 创建 Dify API 实例
+const difyApi = createDifyApiInstance({user: USER})
 
 const XUI: React.FC = () => {
   const [entryForm] = Form.useForm()

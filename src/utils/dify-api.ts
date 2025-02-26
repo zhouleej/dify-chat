@@ -78,6 +78,18 @@ class DifyApi {
   }
 
   /**
+   * 获取会话历史消息
+   */
+  getConversationHistory = (
+    conversation_id: string,
+  ): Promise<IGetConversationHistoryResponse> => {
+    return baseRequest.get(`/messages`, {
+      user: this.options.user,
+      conversation_id,
+    });
+  };
+
+  /**
    * 发送对话消息
    */
   sendMessage(params: {
@@ -114,20 +126,11 @@ class DifyApi {
       },
     });
   }
-
-  /**
-   * 获取会话历史消息
-   */
-  getConversationHistory = (
-    conversation_id: string,
-  ): Promise<IGetConversationHistoryResponse> => {
-    return baseRequest.get(`/messages`, {
-      user: this.options.user,
-      conversation_id,
-    });
-  };
 }
 
-export const difyApi = new DifyApi({
-  user: USER,
-});
+/**
+ * 创建 Dify API 实例
+ */
+export const createDifyApiInstance = (options: IDifyApiOptions) => {
+  return new DifyApi(options);
+};
