@@ -156,7 +156,7 @@ const XUI: React.FC = () => {
   }, []);
 
   const [agent] = useXAgent({
-    request: async ({ message }, { onSuccess }) => {
+    request: async ({ message }, { onSuccess, onUpdate }) => {
       console.log('进来了吗', message);
 
       // 发送消息
@@ -187,6 +187,10 @@ const XUI: React.FC = () => {
           } catch (error) {
             console.error('解析 JSON 失败', error);
           }
+					if (parsedData.event === 'message_end') {
+						console.log('success一次', result)
+      			onSuccess(result);
+          }
           if (!parsedData.answer) {
             console.log('没有数据', chunk);
           } else {
@@ -201,15 +205,33 @@ const XUI: React.FC = () => {
               }
             }
             console.log('text', text);
-            // onUpdate(text);
             result += text;
+    				console.log('enter onUpdate', result);
+            onUpdate(result);
           }
         } else {
           console.log('没有数据', chunk);
+					continue;
         }
       }
-      onSuccess(result);
     },
+
+		// 一种可以稳定输出没有问题的效果
+    // request: async ({ message }, { onSuccess, onUpdate }) => {
+    //   const fullContent = `Streaming output instead of Bubble typing effect. You typed: ${message}`;
+    //   let currentContent = '';
+
+    //   const id = setInterval(() => {
+    //     currentContent = fullContent.slice(0, currentContent.length + 2);
+		// 		console.log('onUpdate', currentContent);
+    //     onUpdate(currentContent);
+
+    //     if (currentContent === fullContent) {
+    //       clearInterval(id);
+    //       onSuccess(fullContent);
+    //     }
+    //   }, 100);
+    // },
   });
 
   const { onRequest, messages, setMessages } = useXChat({
@@ -337,22 +359,26 @@ const XUI: React.FC = () => {
   // ==================== Nodes ====================
 
   const items: GetProp<typeof Bubble.List, 'items'> = useMemo(() => {
-    return [...historyMessages, ...messages].map((messageItem) => {
+		console.log('message变更', [...historyMessages, ...messages]);
+    return [...historyMessages, ...messages].filter((item)=>{
+			return  true
+			// return item.status !== 'loading';
+		}).map((messageItem) => {
       const { id, message, status, isHistory } = messageItem;
       const isQuery = id.toString().endsWith('query');
       return {
         key: id,
-        loading: status === 'loading',
+        // loading: status === 'loading',
         content: message,
         messageRender: renderMarkdown,
         // 用户发送消息时，status 为 local，需要展示为用户头像
         role: isQuery || status === 'local' ? 'user' : 'ai',
-        typing: isHistory
-          ? undefined
-          : {
-              step: 5,
-              interval: 20,
-            },
+        // typing: isHistory
+        //   ? undefined
+        //   : {
+        //       step: 5,
+        //       interval: 20,
+        //     },
       };
     });
   }, [historyMessages, messages]);
