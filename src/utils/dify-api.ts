@@ -51,6 +51,22 @@ interface IDifyApiOptions {
   user: string;
 }
 
+export interface IGetAppInfoResponse {
+  name: string;
+  description: string;
+  tags: string[];
+}
+
+export interface IGetAppMetaResponse {
+  tool_icons: {
+    dalle2: string;
+    api_tool: {
+      background: string;
+      content: string;
+    };
+  };
+}
+
 /**
  * Dify API 类
  */
@@ -60,6 +76,20 @@ class DifyApi {
   }
 
   options: IDifyApiOptions;
+
+  /**
+   * 获取应用基本信息
+   */
+  async getAppInfo(): Promise<IGetAppInfoResponse> {
+    return baseRequest.get('/info');
+  }
+
+  /**
+   * 获取应用 Meta 信息
+   */
+  async getAppMeta(): Promise<IGetAppMetaResponse> {
+    return baseRequest.get('/meta');
+  }
 
   /**
    * 获取应用参数
