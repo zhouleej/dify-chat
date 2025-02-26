@@ -4,7 +4,6 @@ import {
   Conversations,
   Prompts,
   Sender,
-  Welcome,
   useXAgent,
   useXChat,
   XProvider,
@@ -17,32 +16,21 @@ import './App.css';
 
 import {
   CloudUploadOutlined,
-  CommentOutlined,
-  EllipsisOutlined,
   FireOutlined,
-  HeartOutlined,
   LinkOutlined,
   MessageOutlined,
   PlusOutlined,
   ReadOutlined,
-  ShareAltOutlined,
-  SmileOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Form, FormItemProps, type GetProp, Input, Select, Space, Typography } from 'antd';
+import { Button, Form, FormItemProps, type GetProp, Input, Select, Typography } from 'antd';
 import markdownit from 'markdown-it';
 import { createDifyApiInstance } from './utils/dify-api';
 import { RESPONSE_MODE, USER } from './config';
 import { MessageInfo } from '@ant-design/x/es/useXChat';
+import { WelcomePlaceholder } from './components/welcome-placeholder';
 
 const md = markdownit({ html: true, breaks: true });
-
-const renderTitle = (icon: React.ReactElement, title: string) => (
-  <Space align="start">
-    {icon}
-    <span>{title}</span>
-  </Space>
-);
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -64,56 +52,6 @@ const useStyle = createStyles(({ token, css }) => {
     `,
   };
 });
-
-const placeholderPromptsItems: GetProp<typeof Prompts, 'items'> = [
-  {
-    key: '1',
-    label: renderTitle(
-      <FireOutlined style={{ color: '#FF4D4F' }} />,
-      'Hot Topics',
-    ),
-    description: 'What are you interested in?',
-    children: [
-      {
-        key: '1-1',
-        description: `What's new in X?`,
-      },
-      {
-        key: '1-2',
-        description: `What's AGI?`,
-      },
-      {
-        key: '1-3',
-        description: `Where is the doc?`,
-      },
-    ],
-  },
-  {
-    key: '2',
-    label: renderTitle(
-      <ReadOutlined style={{ color: '#1890FF' }} />,
-      'Design Guide',
-    ),
-    description: 'How to design a good product?',
-    children: [
-      {
-        key: '2-1',
-        icon: <HeartOutlined />,
-        description: `Know the well`,
-      },
-      {
-        key: '2-2',
-        icon: <SmileOutlined />,
-        description: `Set the AI role`,
-      },
-      {
-        key: '2-3',
-        icon: <CommentOutlined />,
-        description: `Express the feeling`,
-      },
-    ],
-  },
-];
 
 const senderPromptsItems: GetProp<typeof Prompts, 'items'> = [
   {
@@ -383,36 +321,6 @@ const XUI: React.FC = () => {
     )
   }, [historyMessages, messages]);
 
-  const placeholderNode = (
-    <Space direction="vertical" size={16} className='flex-1 pt-8'>
-      <Welcome
-        variant="borderless"
-        icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
-        title="Hello, I'm Ant Design X"
-        description="Base on Ant Design, AGI product interface solution, create a better intelligent vision~"
-        extra={
-          <Space>
-            <Button icon={<ShareAltOutlined />} />
-            <Button icon={<EllipsisOutlined />} />
-          </Space>
-        }
-      />
-      <Prompts
-        title="Do you want?"
-        items={placeholderPromptsItems}
-        styles={{
-          list: {
-            width: '100%',
-          },
-          item: {
-            flex: 1,
-          },
-        }}
-        onItemClick={onPromptsItemClick}
-      />
-    </Space>
-  );
-
   const attachmentsNode = (
     <Attachments
       beforeUpload={() => false}
@@ -502,7 +410,7 @@ const XUI: React.FC = () => {
             :
             <div className='h-full w-full my-0 mx-auto box-border flex flex-col p-4 gap-4'>
               {/* 🌟 欢迎占位 */}
-              {!items.length && placeholderNode}
+              {!items.length && <WelcomePlaceholder onPromptItemClick={onPromptsItemClick} />}
               {/* 🌟 消息列表 */}
               <Bubble.List
                 items={items}
