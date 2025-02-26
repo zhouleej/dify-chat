@@ -31,7 +31,7 @@ import {
 } from '@ant-design/icons';
 import { Button, Form, FormItemProps, type GetProp, Input, Select, Space, Typography } from 'antd';
 import markdownit from 'markdown-it';
-import { getAppParameters, getConversationHistory, getConversationList, sendMessage } from './utils/dify-api';
+import { difyApi } from './utils/dify-api';
 import { RESPONSE_MODE, USER } from './config';
 import { MessageInfo } from '@ant-design/x/es/useXChat';
 
@@ -166,7 +166,7 @@ const XUI: React.FC = () => {
   const [historyMessages, setHistoryMessages] = useState<MessageInfo<string>[]>([])
 
   const getConversationItems = async () => {
-    const result = await getConversationList()
+    const result = await difyApi.getConversationList()
     const newItems = result?.data?.map((item) => {
       return {
         key: item.id,
@@ -186,7 +186,7 @@ const XUI: React.FC = () => {
       console.log('进来了吗', message)
 
       // 发送消息
-      const response = await sendMessage({
+      const response = await difyApi.sendMessage({
         inputs: {
           target,
         },
@@ -281,7 +281,7 @@ const XUI: React.FC = () => {
     setHistoryMessages([])
 
     // 先获取应用信息
-    const result = await getAppParameters()
+    const result = await difyApi.getAppParameters()
     setChatInitialized(false)
 
     console.log('result', result.user_input_form)
@@ -315,7 +315,7 @@ const XUI: React.FC = () => {
   console.log('表单信息', userInputItems)
 
   const getConversationMessages = async (conversationId: string) => {
-    const result = await getConversationHistory(conversationId)
+    const result = await difyApi.getConversationHistory(conversationId)
     console.log('对话历史', result)
 
     const newMessages: MessageInfo<string>[] = []
