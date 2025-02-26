@@ -2,6 +2,7 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginLess } from '@rsbuild/plugin-less';
 import path from 'path';
+import tailwindcss from 'tailwindcss';
 
 export default defineConfig({
   source: {
@@ -36,4 +37,11 @@ export default defineConfig({
       },
     ],
   },
+  tools: {
+    postcss: {
+      postcssOptions: {
+        plugins: [tailwindcss()],
+      }
+    }
+  }
 });

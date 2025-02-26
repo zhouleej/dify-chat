@@ -61,64 +61,6 @@ const useStyle = createStyles(({ token, css }) => {
     `,
     menu: css`
       background: ${token.colorBgLayout}80;
-      width: 280px;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-    `,
-    conversations: css`
-      padding: 0 12px;
-      flex: 1;
-      overflow-y: auto;
-    `,
-    chat: css`
-      height: 100%;
-      width: 100%;
-      // max-width: 700px;
-      margin: 0 auto;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      padding: ${token.paddingLG}px;
-      gap: 16px;
-    `,
-    messages: css`
-      flex: 1;
-    `,
-    placeholder: css`
-      flex: 1;
-      padding-top: 32px;
-    `,
-    sender: css`
-      box-shadow: ${token.boxShadow};
-    `,
-    logo: css`
-      display: flex;
-      height: 72px;
-      align-items: center;
-      justify-content: start;
-      padding: 0 24px;
-      box-sizing: border-box;
-
-      img {
-        width: 24px;
-        height: 24px;
-        display: inline-block;
-      }
-
-      span {
-        display: inline-block;
-        margin: 0 8px;
-        font-weight: bold;
-        color: ${token.colorText};
-        font-size: 16px;
-      }
-    `,
-    addBtn: css`
-      background: #1677ff0f;
-      border: 1px solid #1677ff34;
-      width: calc(100% - 24px);
-      margin: 0 12px 24px 12px;
     `,
   };
 });
@@ -336,6 +278,8 @@ const XUI: React.FC = () => {
 
   const handleAddConversationBtnClick = async () => {
 
+    setHistoryMessages([])
+
     // 先获取应用信息
     const result = await getAppParameters()
     setChatInitialized(false)
@@ -364,8 +308,6 @@ const XUI: React.FC = () => {
     } else {
       setChatInitialized(true)
     }
-
-    console.log('应用信息', result)
 
     onAddConversation()
   };
@@ -439,7 +381,7 @@ const XUI: React.FC = () => {
   }, [historyMessages, messages]);
 
   const placeholderNode = (
-    <Space direction="vertical" size={16} className={styles.placeholder}>
+    <Space direction="vertical" size={16} className='flex-1 pt-8'>
       <Welcome
         variant="borderless"
         icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
@@ -482,28 +424,28 @@ const XUI: React.FC = () => {
   );
 
   const logoNode = (
-    <div className={styles.logo}>
+    <div className='flex h-20 items-center justify-start py-0 px-6 box-border'>
       <img
+        className='w-6 h-6 inline-block'
         src="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*eco6RrQhxbMAAAAAAAAAAAAADgCCAQ/original"
         draggable={false}
         alt="logo"
       />
-      <span>Ant Design X</span>
+      <span className='inline-block my-0 mx-2 font-bold text-gray-700 text-base'>Ant Design X</span>
     </div>
   );
 
-  // ==================== Render =================
   return (
     <XProvider theme={{ token: { colorPrimary: '#ff4a4a' } }}>
       <div className={styles.layout}>
-        <div className={styles.menu}>
+        <div className={`${styles.menu} w-72 h-full flex flex-col`}>
           {/* 🌟 Logo */}
           {logoNode}
           {/* 🌟 添加会话 */}
           <Button
             onClick={handleAddConversationBtnClick}
             type="link"
-            className={styles.addBtn}
+            className='bg-[#1677ff0f] border border-solid border-[#1677ff0f] w-[calc(100%-24px)] mt-0 mx-3 mb-6'
             icon={<PlusOutlined />}
           >
             New Conversation
@@ -511,32 +453,16 @@ const XUI: React.FC = () => {
           {/* 🌟 会话管理 */}
           <Conversations
             items={conversationsItems}
-            className={styles.conversations}
+            className='py-0 px-3 flex-1 overflow-y-auto'
             activeKey={activeKey}
             onActiveChange={onConversationClick}
           />
         </div>
         {
           !chatInitialized && userInputItems?.length ?
-            <div style={{
-              width: '100%',
-              height: '100%',
-              display: 'flex',
-              // flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginTop: '-20px'
-            }}>
-              <div style={{
-                width: '400px'
-              }}>
-                <div style={{
-                  fontSize: '24px',
-                  fontWeight: 'bold',
-                  color: '#000',
-                  marginBottom: '20px',
-                  // textAlign: 'center'
-                }}>
+            <div className='w-full h-full flex items-center justify-center -mt-5'>
+              <div className='w-96'>
+                <div className='text-2xl font-bold text-black mb-5'>
                   Dify Chat
                 </div>
                 <Form form={entryForm}>
@@ -571,14 +497,14 @@ const XUI: React.FC = () => {
               </div>
             </div>
             :
-            <div className={styles.chat}>
+            <div className='h-full w-full my-0 mx-auto box-border flex flex-col p-4 gap-4'>
               {/* 🌟 欢迎占位 */}
               {!items.length && placeholderNode}
               {/* 🌟 消息列表 */}
               <Bubble.List
                 items={items}
                 roles={roles}
-                className={styles.messages}
+                className='flex-1'
               />
               {/* 🌟 提示词 */}
               <Prompts
@@ -592,7 +518,7 @@ const XUI: React.FC = () => {
                 onSubmit={onSubmit}
                 prefix={attachmentsNode}
                 loading={agent.isRequesting()}
-                className={styles.sender}
+                className='shadow-xl'
               />
             </div>
         }
