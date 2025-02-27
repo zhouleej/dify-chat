@@ -18,7 +18,6 @@ import { USER } from './config';
 import ChatboxWrapper from './components/chatbox-wrapper';
 import { Logo } from './components/logo';
 
-
 const useStyle = createStyles(({ token, css }) => {
   return {
     layout: css`
@@ -39,8 +38,6 @@ const useStyle = createStyles(({ token, css }) => {
     `,
   };
 });
-
-
 
 interface IConversationItem {
   key: string;
@@ -141,7 +138,7 @@ const XUI: React.FC = () => {
         </div>
 
         {/* 右侧聊天窗口 */}
-        <ChatboxWrapper 
+        <ChatboxWrapper
           appInfo={appInfo}
           difyApi={difyApi}
           conversationId={curentConversationId}

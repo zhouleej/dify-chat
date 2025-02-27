@@ -121,8 +121,9 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     },
   });
 
-
-
+  /**
+   * 获取对话的历史消息
+   */
   const getConversationMessages = async (conversationId: string) => {
     const result = await difyApi.getConversationHistory(conversationId);
     console.log('对话历史', result);
