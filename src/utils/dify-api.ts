@@ -1,4 +1,3 @@
-import { USER } from '../config';
 import { baseRequest } from './base-request';
 
 interface IUserInputForm {
@@ -10,7 +9,7 @@ interface IUserInputForm {
   };
 }
 
-interface IGetAppParametersResponse {
+export interface IGetAppParametersResponse {
   user_input_form: IUserInputForm[];
 }
 
@@ -70,7 +69,7 @@ export interface IGetAppMetaResponse {
 /**
  * Dify API 类
  */
-class DifyApi {
+export class DifyApi {
   constructor(options: IDifyApiOptions) {
     this.options = options;
   }
