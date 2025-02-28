@@ -287,7 +287,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           <div className="w-full h-full flex items-center justify-center -mt-5">
             <div className="w-96">
               <div className="text-2xl font-bold text-black mb-5">
-                Dify Chat
+                {appInfo?.name}
               </div>
               <Form form={entryForm}>
                 {userInputItems.map((item) => {
