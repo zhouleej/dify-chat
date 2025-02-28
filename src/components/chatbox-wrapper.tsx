@@ -56,6 +56,10 @@ interface IChatboxWrapperProps {
    */
   conversationId?: string;
   /**
+   * 当前对话名称
+   */
+  conversationName: string;
+  /**
    * 对话 ID 变更时触发的回调函数
    * @param id 即将变更的对话 ID
    */
@@ -70,6 +74,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     appParameters,
     difyApi,
     conversationId,
+    conversationName,
     onConversationIdChange,
   } = props;
   const [initLoading, setInitLoading] = useState<boolean>(false);
@@ -265,80 +270,90 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   }, [historyMessages, messages]);
 
   return (
-    <>
-      {/* 有对话信息时，优先展示 */}
-      {initLoading ? (
-        <div className="w-full h-full flex items-center justify-center">
-          <Spin spinning />
-        </div>
-      ) : formVisible ? (
-        <div className="w-full h-full flex items-center justify-center -mt-5">
-          <div className="w-96">
-            <div className="text-2xl font-bold text-black mb-5">Dify Chat</div>
-            <Form form={entryForm}>
-              {userInputItems.map((item) => {
-                return (
-                  <Form.Item
-                    key={item.name}
-                    name={item.name}
-                    label={item.label}
-                    required={item.required}
-                    rules={item.rules}
-                  >
-                    {item.type === 'input' ? (
-                      <Input placeholder="请输入" />
-                    ) : item.type === 'select' ? (
-                      <Select placeholder="请选择" />
-                    ) : (
-                      '不支持的控件类型'
-                    )}
-                  </Form.Item>
-                );
-              })}
-            </Form>
-            <Button
-              block
-              type="primary"
-              icon={<MessageOutlined />}
-              onClick={async () => {
-                const result = await entryForm.validateFields();
-                const values = entryForm.getFieldsValue();
-                console.log('表单值', values);
-                console.log('result', result);
-                setTarget(entryForm.getFieldValue('target'));
-                setFormVisible(false);
-              }}
-            >
-              开始对话
-            </Button>
-          </div>
-        </div>
-      ) : conversationId ? (
-        <Chatbox
-          items={items}
-          content={content}
-          isRequesting={agent.isRequesting()}
-          onPromptsItemClick={onPromptsItemClick}
-          onChange={onChange}
-          onSubmit={onSubmit}
-        />
-      ) : appInfo ? (
-        <div className="w-full h-full flex items-center justify-center text-black">
-          <div className="flex items-center justify-center flex-col">
-            <div className="text-2xl font-bold">{appInfo.name}</div>
-            <div className="text-gray-700 text-base max-w-44 mt-3">
-              {appInfo.description}
-            </div>
-            {appInfo.tags ? (
-              <div>
-                {appInfo.tags.map((tag) => {
-                  return <Tag key={tag}>{tag}</Tag>;
-                })}
-              </div>
-            ) : null}
-          </div>
+    <div className="flex h-screen flex-col overflow-hidden flex-1">
+      {conversationName ? (
+        <div className="h-12 leading-[3rem] px-8 text-gray-800 text-base top-0 z-20 mr-4 bg-white w-full shadow-sm">
+          {conversationName}
         </div>
       ) : null}
-    </>
+
+      <div className="flex-1 overflow-hidden mx-auto">
+        {/* 有对话信息时，优先展示 */}
+        {initLoading ? (
+          <div className="w-full h-full flex items-center justify-center">
+            <Spin spinning />
+          </div>
+        ) : formVisible ? (
+          <div className="w-full h-full flex items-center justify-center -mt-5">
+            <div className="w-96">
+              <div className="text-2xl font-bold text-black mb-5">
+                Dify Chat
+              </div>
+              <Form form={entryForm}>
+                {userInputItems.map((item) => {
+                  return (
+                    <Form.Item
+                      key={item.name}
+                      name={item.name}
+                      label={item.label}
+                      required={item.required}
+                      rules={item.rules}
+                    >
+                      {item.type === 'input' ? (
+                        <Input placeholder="请输入" />
+                      ) : item.type === 'select' ? (
+                        <Select placeholder="请选择" />
+                      ) : (
+                        '不支持的控件类型'
+                      )}
+                    </Form.Item>
+                  );
+                })}
+              </Form>
+              <Button
+                block
+                type="primary"
+                icon={<MessageOutlined />}
+                onClick={async () => {
+                  const result = await entryForm.validateFields();
+                  const values = entryForm.getFieldsValue();
+                  console.log('表单值', values);
+                  console.log('result', result);
+                  setTarget(entryForm.getFieldValue('target'));
+                  setFormVisible(false);
+                }}
+              >
+                开始对话
+              </Button>
+            </div>
+          </div>
+        ) : conversationId ? (
+          <Chatbox
+            items={items}
+            content={content}
+            isRequesting={agent.isRequesting()}
+            onPromptsItemClick={onPromptsItemClick}
+            onChange={onChange}
+            onSubmit={onSubmit}
+          />
+        ) : appInfo ? (
+          <div className="w-full h-full flex items-center justify-center text-black">
+            <div className="flex items-center justify-center flex-col">
+              <div className="text-2xl font-bold">{appInfo.name}</div>
+              <div className="text-gray-700 text-base max-w-44 mt-3">
+                {appInfo.description}
+              </div>
+              {appInfo.tags ? (
+                <div>
+                  {appInfo.tags.map((tag) => {
+                    return <Tag key={tag}>{tag}</Tag>;
+                  })}
+                </div>
+              ) : null}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
   );
 }

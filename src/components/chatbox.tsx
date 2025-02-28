@@ -1,7 +1,13 @@
 import { Attachments, Bubble, Prompts, Sender } from '@ant-design/x';
 import { WelcomePlaceholder } from './welcome-placeholder';
 import { Button, GetProp } from 'antd';
-import { CloudUploadOutlined, FireOutlined, LinkOutlined, ReadOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  CloudUploadOutlined,
+  FireOutlined,
+  LinkOutlined,
+  ReadOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 
 const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
@@ -34,7 +40,7 @@ export interface ChatboxProps {
   items: GetProp<typeof Bubble.List, 'items'>;
   content: string;
   isRequesting: boolean;
-  onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'>
+  onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'>;
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
 }
@@ -50,7 +56,6 @@ export const Chatbox = ({
   onChange,
   onSubmit,
 }: ChatboxProps) => {
-
   // 文件上传
   const attachmentsNode = (
     <Attachments
@@ -66,27 +71,33 @@ export const Chatbox = ({
   );
 
   return (
-    <div className="h-full w-full my-0 mx-auto box-border flex flex-col p-4 gap-4">
-      {/* 🌟 欢迎占位 */}
-      {!items?.length && (
-        <WelcomePlaceholder onPromptItemClick={onPromptsItemClick} />
-      )}
-      {/* 🌟 消息列表 */}
-      <Bubble.List items={items} roles={roles} className="flex-1" />
-      {/* 🌟 提示词 */}
-      <Prompts
-        items={senderPromptsItems}
-        onItemClick={onPromptsItemClick}
-      />
-      {/* 🌟 输入框 */}
-      <Sender
-        value={content}
-        onChange={onChange}
-        onSubmit={onSubmit}
-        prefix={attachmentsNode}
-        loading={isRequesting}
-        className="shadow-xl"
-      />
+    <div className="w-full h-full overflow-hidden my-0 mx-auto box-border flex flex-col gap-4 relative">
+      <div className="w-full h-full overflow-auto pt-4 pb-40">
+        {/* 🌟 欢迎占位 */}
+        {!items?.length && (
+          <WelcomePlaceholder onPromptItemClick={onPromptsItemClick} />
+        )}
+        {/* 🌟 消息列表 */}
+        <Bubble.List items={items} roles={roles} className="flex-1 w-3/4 mx-auto" />
+        <div className="absolute bottom-0 pb-6 pt-3 bg-white w-3/4 left-1/2" style={{
+          transform: 'translateX(-50%)'
+        }}>
+          {/* 🌟 提示词 */}
+          <Prompts
+            items={senderPromptsItems}
+            onItemClick={onPromptsItemClick}
+          />
+          {/* 🌟 输入框 */}
+          <Sender
+            value={content}
+            onChange={onChange}
+            onSubmit={onSubmit}
+            prefix={attachmentsNode}
+            loading={isRequesting}
+            className="shadow-2xl bg-white w-full mt-3"
+          />
+        </div>
+      </div>
     </div>
   );
 };

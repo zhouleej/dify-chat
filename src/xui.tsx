@@ -24,7 +24,6 @@ const useStyle = createStyles(({ token, css }) => {
       width: 100%;
       min-width: 1000px;
       height: 100vh;
-      border-radius: ${token.borderRadius}px;
       display: flex;
       background: ${token.colorBgContainer};
       font-family: AlibabaPuHuiTi, ${token.fontFamily}, sans-serif;
@@ -133,7 +132,7 @@ const XUI: React.FC = () => {
           <Button
             onClick={handleAddConversationBtnClick}
             type="link"
-            className="bg-[#1677ff0f] border border-solid border-[#1677ff0f] w-[calc(100%-24px)] mt-0 mx-3 mb-6"
+            className="bg-[#1677ff0f] border border-solid border-[#1677ff0f] w-[calc(100%-24px)] mt-0 mx-3"
             icon={<PlusOutlined />}
           >
             New Conversation
@@ -152,6 +151,11 @@ const XUI: React.FC = () => {
           appInfo={appInfo}
           difyApi={difyApi}
           conversationId={curentConversationId}
+          conversationName={
+            conversationsItems.find(
+              (item) => item.key === curentConversationId,
+            )?.label || ''
+          }
           onConversationIdChange={setCurentConversationId}
           appParameters={appParameters}
         />
