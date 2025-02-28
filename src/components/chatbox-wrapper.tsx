@@ -1,12 +1,33 @@
-import { MessageOutlined } from "@ant-design/icons";
-import { Button, Form, FormItemProps, GetProp, Input, Select, Tag, Typography } from "antd";
-import { Chatbox } from "./chatbox";
-import { DifyApi, IGetAppInfoResponse, IGetAppParametersResponse } from "../utils/dify-api";
-import { useEffect, useMemo, useState } from "react";
-import { Bubble, BubbleProps, Prompts, useXAgent, useXChat, XStream } from "@ant-design/x";
-import { RESPONSE_MODE, USER } from "../config";
-import { MessageInfo } from "@ant-design/x/es/use-x-chat";
-import MarkdownIt from "markdown-it";
+import { MessageOutlined } from '@ant-design/icons';
+import {
+  Button,
+  Form,
+  FormItemProps,
+  GetProp,
+  Input,
+  Select,
+  Spin,
+  Tag,
+  Typography,
+} from 'antd';
+import { Chatbox } from './chatbox';
+import {
+  DifyApi,
+  IGetAppInfoResponse,
+  IGetAppParametersResponse,
+} from '../utils/dify-api';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Bubble,
+  BubbleProps,
+  Prompts,
+  useXAgent,
+  useXChat,
+  XStream,
+} from '@ant-design/x';
+import { RESPONSE_MODE, USER } from '../config';
+import { MessageInfo } from '@ant-design/x/es/use-x-chat';
+import MarkdownIt from 'markdown-it';
 
 const isTempId = (id: string | undefined) => {
   return id?.startsWith('temp');
@@ -21,39 +42,46 @@ interface IChatboxWrapperProps {
   /**
    * 应用信息
    */
-  appInfo?: IGetAppInfoResponse
+  appInfo?: IGetAppInfoResponse;
   /**
    * 应用参数
    */
-  appParameters?: IGetAppParametersResponse
+  appParameters?: IGetAppParametersResponse;
   /**
    * Dify API 实例
    */
-  difyApi: DifyApi
+  difyApi: DifyApi;
   /**
    * 当前对话 ID
    */
-  conversationId?: string
+  conversationId?: string;
   /**
    * 对话 ID 变更时触发的回调函数
    * @param id 即将变更的对话 ID
    */
-  onConversationIdChange: (id: string) => void
+  onConversationIdChange: (id: string) => void;
 }
 
 export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   const [entryForm] = Form.useForm();
 
-  const { appInfo, appParameters, difyApi, conversationId, onConversationIdChange } = props
+  const {
+    appInfo,
+    appParameters,
+    difyApi,
+    conversationId,
+    onConversationIdChange,
+  } = props;
+  const [initLoading, setInitLoading] = useState<boolean>(false);
   const [content, setContent] = useState('');
   const [target, setTarget] = useState('');
   const [historyMessages, setHistoryMessages] = useState<MessageInfo<string>[]>(
     [],
   );
-    const [userInputItems, setUserInputItems] = useState<
-      IConversationEntryFormItem[]
-    >([]);
-      const [chatInitialized, setChatInitialized] = useState<boolean>(false);
+  const [userInputItems, setUserInputItems] = useState<
+    IConversationEntryFormItem[]
+  >([]);
+  const [formVisible, setFormVisible] = useState<boolean>(false);
 
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess, onUpdate }) => {
@@ -64,9 +92,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         inputs: {
           target,
         },
-        conversation_id: !isTempId(conversationId)
-          ? conversationId
-          : undefined,
+        conversation_id: !isTempId(conversationId) ? conversationId : undefined,
         files: [],
         user: USER,
         response_mode: RESPONSE_MODE,
@@ -92,7 +118,6 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
             console.error('解析 JSON 失败', error);
           }
           if (parsedData.event === 'message_end') {
-            console.log('success一次', result)
             onSuccess(result);
           }
           if (!parsedData.answer) {
@@ -103,14 +128,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
 
             // 如果有对话 ID，跟当前的对比一下
             if (conversation_id) {
-              // 如果当前对话 ID 是临时 ID, 则更新到当前对话 ID
-              if (isTempId(conversationId)) {
-                onConversationIdChange(conversation_id);
-              }
+              // 通知外部组件，对话 ID 变更，外部组件需要更新对话列表
+              onConversationIdChange(conversation_id);
             }
-            console.log('text', text);
             result += text;
-            console.log('enter onUpdate', result);
             onUpdate(result);
           }
         } else {
@@ -125,6 +146,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
    * 获取对话的历史消息
    */
   const getConversationMessages = async (conversationId: string) => {
+    // 如果是临时 ID，则不获取历史消息
+    if (isTempId(conversationId)) {
+      return;
+    }
     const result = await difyApi.getConversationHistory(conversationId);
     console.log('对话历史', result);
 
@@ -158,16 +183,22 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     agent,
   });
 
-  useEffect(() => {
-    setChatInitialized(false);
-    if (conversationId) {
-      setMessages([]);
-      getConversationMessages(conversationId);
+  const initConversationInfo = async () => {
+    setInitLoading(true);
+    setFormVisible(false);
+    setMessages([]);
+    setHistoryMessages([]);
+    // 有对话 ID 且非临时 ID 时，获取历史消息
+    if (conversationId && !isTempId(conversationId)) {
+      await getConversationMessages(conversationId);
+      setInitLoading(false);
     } else {
+      // 判断是否有参数 有参数则展示表单
       if (appParameters?.user_input_form?.length) {
+        setFormVisible(true);
         // 有参数则展示表单
         const formItems =
-        appParameters.user_input_form?.map((item) => {
+          appParameters.user_input_form?.map((item) => {
             if (item['text-input']) {
               const originalProps = item['text-input'];
               const baseProps: IConversationEntryFormItem = {
@@ -184,10 +215,14 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
             return {} as IConversationEntryFormItem;
           }) || [];
         setUserInputItems(formItems);
-      } else {
-        setChatInitialized(true);
       }
+      // 不管有没有参数，都结束 loading，开始展示内容
+      setInitLoading(false);
     }
+  };
+
+  useEffect(() => {
+    initConversationInfo();
   }, [conversationId]);
 
   const onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'> = (info) => {
@@ -229,75 +264,81 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     });
   }, [historyMessages, messages]);
 
-  return <>
-    {!chatInitialized && userInputItems?.length ? (
-      <div className="w-full h-full flex items-center justify-center -mt-5">
-        <div className="w-96">
-          <div className="text-2xl font-bold text-black mb-5">
-            Dify Chat
-          </div>
-          <Form form={entryForm}>
-            {userInputItems.map((item) => {
-              return (
-                <Form.Item
-                  key={item.name}
-                  name={item.name}
-                  label={item.label}
-                  required={item.required}
-                  rules={item.rules}
-                >
-                  {item.type === 'input' ? (
-                    <Input placeholder="请输入" />
-                  ) : item.type === 'select' ? (
-                    <Select placeholder="请选择" />
-                  ) : (
-                    '不支持的控件类型'
-                  )}
-                </Form.Item>
-              );
-            })}
-          </Form>
-          <Button
-            block
-            type="primary"
-            icon={<MessageOutlined />}
-            onClick={async () => {
-              const result = await entryForm.validateFields();
-              const values = entryForm.getFieldsValue();
-              console.log('表单值', values);
-              console.log('result', result);
-              setTarget(entryForm.getFieldValue('target'));
-              setChatInitialized(true);
-            }}
-          >
-            开始对话
-          </Button>
+  return (
+    <>
+      {/* 有对话信息时，优先展示 */}
+      {initLoading ? (
+        <div className="w-full h-full flex items-center justify-center">
+          <Spin spinning />
         </div>
-      </div>
-    ) : conversationId ? (
-      <Chatbox
-        items={items}
-        content={content}
-        isRequesting={agent.isRequesting()}
-        onPromptsItemClick={onPromptsItemClick}
-        onChange={onChange}
-        onSubmit={onSubmit}
-      />
-    ) : appInfo ? (
-      <div className="w-full h-full flex items-center justify-center text-black">
-        <div className="flex items-center justify-center flex-col">
-          <div className="text-2xl font-bold">{appInfo.name}</div>
-          <div className="text-gray-700 text-base max-w-44 mt-3">
-            {appInfo.description}
-          </div>
-          {appInfo.tags ? (
-            <div>
-              {appInfo.tags.map((tag) => {
-                return <Tag key={tag}>{tag}</Tag>;
+      ) : formVisible ? (
+        <div className="w-full h-full flex items-center justify-center -mt-5">
+          <div className="w-96">
+            <div className="text-2xl font-bold text-black mb-5">Dify Chat</div>
+            <Form form={entryForm}>
+              {userInputItems.map((item) => {
+                return (
+                  <Form.Item
+                    key={item.name}
+                    name={item.name}
+                    label={item.label}
+                    required={item.required}
+                    rules={item.rules}
+                  >
+                    {item.type === 'input' ? (
+                      <Input placeholder="请输入" />
+                    ) : item.type === 'select' ? (
+                      <Select placeholder="请选择" />
+                    ) : (
+                      '不支持的控件类型'
+                    )}
+                  </Form.Item>
+                );
               })}
-            </div>
-          ) : null}
+            </Form>
+            <Button
+              block
+              type="primary"
+              icon={<MessageOutlined />}
+              onClick={async () => {
+                const result = await entryForm.validateFields();
+                const values = entryForm.getFieldsValue();
+                console.log('表单值', values);
+                console.log('result', result);
+                setTarget(entryForm.getFieldValue('target'));
+                setFormVisible(false);
+              }}
+            >
+              开始对话
+            </Button>
+          </div>
         </div>
-      </div>
-    ) : null}</>
+      ) : conversationId ? (
+        <Chatbox
+          items={items}
+          content={content}
+          isRequesting={agent.isRequesting()}
+          onPromptsItemClick={onPromptsItemClick}
+          onChange={onChange}
+          onSubmit={onSubmit}
+        />
+      ) : appInfo ? (
+        <div className="w-full h-full flex items-center justify-center text-black">
+          <div className="flex items-center justify-center flex-col">
+            <div className="text-2xl font-bold">{appInfo.name}</div>
+            <div className="text-gray-700 text-base max-w-44 mt-3">
+              {appInfo.description}
+            </div>
+            {appInfo.tags ? (
+              <div>
+                {appInfo.tags.map((tag) => {
+                  return <Tag key={tag}>{tag}</Tag>;
+                })}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+    </>
+  );
 }

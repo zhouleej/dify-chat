@@ -112,6 +112,16 @@ const XUI: React.FC = () => {
     setCurentConversationId(key);
   };
 
+  useEffect(() => {
+    // 如果对话 ID 不在当前列表中，则刷新一下
+    if (
+      curentConversationId &&
+      !conversationsItems.find((item) => item.key === curentConversationId) 
+    ) {
+      getConversationItems()
+    }
+  }, [curentConversationId]);
+
   return (
     <XProvider theme={{ token: { colorPrimary: '#ff4a4a' } }}>
       <div className={styles.layout}>
