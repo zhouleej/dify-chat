@@ -150,6 +150,9 @@ export class DifyApi {
     return baseRequest.baseRequest('/chat-messages', {
       method: 'POST',
       body: JSON.stringify(params),
+      headers: {
+        'Content-Type': 'application/json', 
+      }
     });
   }
 }
