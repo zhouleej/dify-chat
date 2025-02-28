@@ -23,6 +23,13 @@ interface IConversationItem {
   updated_at: number;
 }
 
+interface IGetConversationListRequest {
+  /**
+   * 返回条数
+   */
+  limit: number
+}
+
 interface IGetConversationListResponse {
   data: IConversationItem[];
 }
@@ -100,9 +107,10 @@ export class DifyApi {
   /**
    * 获取当前用户的会话列表（默认返回最近20条）
    */
-  getConversationList(): Promise<IGetConversationListResponse> {
+  getConversationList(params?: IGetConversationListRequest): Promise<IGetConversationListResponse> {
     return baseRequest.get('/conversations', {
       user: this.options.user,
+      limit: params?.limit || 100
     });
   }
 
