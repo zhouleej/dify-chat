@@ -1,4 +1,10 @@
-import { MessageOutlined } from '@ant-design/icons';
+import {
+  CopyOutlined,
+  DislikeOutlined,
+  LikeOutlined,
+  MessageOutlined,
+  SyncOutlined,
+} from '@ant-design/icons';
 import {
   Button,
   Form,
@@ -6,9 +12,11 @@ import {
   GetProp,
   Input,
   Select,
+  Space,
   Spin,
   Tag,
   Typography,
+  message as antdMessage
 } from 'antd';
 import { Chatbox } from './chatbox';
 import {
@@ -265,8 +273,52 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         messageRender: renderMarkdown,
         // 用户发送消息时，status 为 local，需要展示为用户头像
         role: isQuery || status === 'local' ? 'user' : 'ai',
+        footer: isQuery ? null : (
+          <Space>
+            <Button
+              color="default"
+              variant="text"
+              size="small"
+              icon={<SyncOutlined />}
+            />
+            <Button
+              color="default"
+              variant="text"
+              size="small"
+              icon={<CopyOutlined />}
+            />
+            <Button
+              color="default"
+              variant="text"
+              size="small"
+              icon={<LikeOutlined />}
+              onClick={async() => {
+                await difyApi.feedbackMessage({
+                  messageId: (id as string).replace('-answer', ''),
+                  rating: 'like',
+                  content: ''
+                })
+                antdMessage.success('点赞成功');
+              }}
+            />
+            <Button
+              color="default"
+              variant="text"
+              size="small"
+              icon={<DislikeOutlined />}
+              onClick={async() => {
+                await difyApi.feedbackMessage({
+                  messageId: (id as string).replace('-answer', ''),
+                  rating: 'dislike',
+                  content: ''
+                })
+                antdMessage.success('点踩成功');
+              }}
+            />
+          </Space>
+        ),
       };
-    });
+    }) as GetProp<typeof Bubble.List, 'items'>;
   }, [historyMessages, messages]);
 
   return (

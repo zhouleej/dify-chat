@@ -163,6 +163,30 @@ export class DifyApi {
       }
     });
   }
+
+  /**
+   * 消息反馈
+   */
+  feedbackMessage(params: {
+    /**
+     * 消息 ID
+     */
+     messageId: string
+     /**
+      * 反馈类型 like-点赞 dislike-点踩 null-取消
+      */
+     rating: 'like' | 'dislike' | null
+     /**
+      * 反馈内容
+      */
+     content: string
+  }) {
+    const { messageId, ...restParams } = params
+    return baseRequest.post(`/messages/${messageId}/feedbacks`, {
+      ...restParams,
+      user: this.options.user,
+    })
+  }
 }
 
 /**
