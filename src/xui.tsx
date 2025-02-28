@@ -93,11 +93,11 @@ const XUI: React.FC = () => {
     // 创建新对话
     const newKey = `temp_${Math.random()}`;
     setConversationsItems([
-      ...conversationsItems,
       {
         key: newKey,
         label: `新对话`,
       },
+      ...conversationsItems,
     ]);
     setCurentConversationId(newKey);
   };
