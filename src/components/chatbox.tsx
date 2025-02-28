@@ -14,7 +14,8 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
     placement: 'start',
     avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
     style: {
-      maxWidth: '70%',
+			// 减去一个头像的宽度
+      maxWidth: 'calc(100% - 44px)',
     },
   },
   user: {
