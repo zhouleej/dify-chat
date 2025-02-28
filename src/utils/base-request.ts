@@ -32,7 +32,7 @@ export class XRequest {
     return result.json()
   }
 
-  async get(url: string, params?: Record<string, string>, headers: Record<string, string> = {}) {
+  async get(url: string, params?: Record<string, unknown>, headers: Record<string, string> = {}) {
     const queryString = params ? `?${new URLSearchParams(params).toString()}` : ''
     const result = await this.jsonRequest(`${url}${queryString}`, {
       method: 'GET',
