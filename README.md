@@ -2,6 +2,12 @@
 
 一个基于 Dify API 的 AI 会话聊天 Web 应用。
 
+## 特性
+
+- 灵活部署，支持接入 Dify Cloud 和私有化部署的 API 服务
+- 高效接入，提供可复用的 React 组件，快速嵌入现有应用
+- 快速适配，支持自定义样式和主题，与业务系统风格保持统一
+
 ## 技术栈
 
 - React v18
@@ -20,7 +26,7 @@
 DIFY_API_BASE=https://api.dify.ai
 # Dify API 版本，固定为 /v1
 DIFY_API_VERSION=/v1
-# Dify API Key，在 Dify 后台获取，生成的是一个 app- 开头的 key
+# Dify API Key，在 Dify 控制台获取，生成的是一个 app- 开头的 key
 DIFY_API_KEY=app-YOUR_API_KEY
 ```
 
