@@ -3,6 +3,7 @@ import {
   DislikeOutlined,
   LikeOutlined,
   MessageOutlined,
+  RobotOutlined,
   SyncOutlined,
 } from '@ant-design/icons';
 import {
@@ -16,7 +17,8 @@ import {
   Spin,
   Tag,
   Typography,
-  message as antdMessage
+  message as antdMessage,
+	theme,
 } from 'antd';
 import { Chatbox } from './chatbox';
 import {
@@ -76,6 +78,7 @@ interface IChatboxWrapperProps {
 
 export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   const [entryForm] = Form.useForm();
+	const { token } = theme.useToken()
 
   const {
     appInfo,
@@ -324,7 +327,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   return (
     <div className="flex h-screen flex-col overflow-hidden flex-1">
       {conversationName ? (
-        <div className="h-12 leading-[3rem] px-8 text-gray-800 text-base top-0 z-20 mr-4 bg-white w-full shadow-sm">
+        <div className="h-16 leading-[4rem] px-8 text-gray-800 text-base top-0 z-20 mr-4 bg-white w-full shadow-sm">
           {conversationName}
         </div>
       ) : null}
@@ -391,7 +394,13 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         ) : appInfo ? (
           <div className="w-full h-full flex items-center justify-center text-black">
             <div className="flex items-center justify-center flex-col">
-              <div className="text-2xl font-bold">{appInfo.name}</div>
+              <RobotOutlined
+                className='text-2xl'
+                style={{
+                  color: token.colorPrimary,
+                }}
+              />
+              <div className="text-2xl font-bold mt-3">{appInfo.name}</div>
               <div className="text-gray-700 text-base max-w-44 mt-3">
                 {appInfo.description}
               </div>
