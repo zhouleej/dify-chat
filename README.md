@@ -2,6 +2,8 @@
 
 一个基于 Dify API 的 AI 会话聊天 Web 应用。
 
+![Screen Shot](image.png)
+
 ## 特性
 
 - 灵活部署，支持接入 Dify Cloud 和私有化部署的 API 服务
