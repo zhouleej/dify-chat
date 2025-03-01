@@ -1,6 +1,6 @@
 # Dify Chat Web
 
-一个基于 Dify API 的 AI 会话聊天 Web 应用。
+一个基于 Dify API 的 AI 会话 Web 应用。
 
 ![Screen Shot](image.png)
 
