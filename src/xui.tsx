@@ -115,14 +115,14 @@ const XUI: React.FC = () => {
     // 如果对话 ID 不在当前列表中，则刷新一下
     if (
       curentConversationId &&
-      !conversationsItems.find((item) => item.key === curentConversationId) 
+      !conversationsItems.find((item) => item.key === curentConversationId)
     ) {
       getConversationItems()
     }
   }, [curentConversationId]);
 
   return (
-    <XProvider theme={{ token: { colorPrimary: '#ff4a4a' } }}>
+    <XProvider theme={{ token: { colorPrimary: '#1689fe' } }}>
       <div className={styles.layout}>
         {/* 左侧边栏 */}
         <div className={`${styles.menu} w-72 h-full flex flex-col`}>
