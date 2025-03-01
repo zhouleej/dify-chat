@@ -131,8 +131,7 @@ const XUI: React.FC = () => {
           {/* 🌟 添加会话 */}
           <Button
             onClick={handleAddConversationBtnClick}
-            type="link"
-            className="bg-[#1677ff0f] border border-solid border-[#1677ff0f] w-[calc(100%-24px)] mt-0 mx-3"
+            className="border border-solid border-[#1689fe] w-[calc(100%-24px)] mt-0 mx-3 text-[#1689fe]"
             icon={<PlusOutlined />}
           >
             New Conversation
@@ -152,9 +151,8 @@ const XUI: React.FC = () => {
           difyApi={difyApi}
           conversationId={curentConversationId}
           conversationName={
-            conversationsItems.find(
-              (item) => item.key === curentConversationId,
-            )?.label || ''
+            conversationsItems.find((item) => item.key === curentConversationId)
+              ?.label || ''
           }
           onConversationIdChange={setCurentConversationId}
           appParameters={appParameters}
