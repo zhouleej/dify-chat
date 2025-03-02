@@ -26,7 +26,7 @@ import {
   IGetAppInfoResponse,
   IGetAppParametersResponse,
 } from '../utils/dify-api';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Bubble,
   BubbleProps,
@@ -99,6 +99,11 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   const [formVisible, setFormVisible] = useState<boolean>(false);
 
   const [nextSuggestions, setNextSuggestions] = useState<string[]>([]);
+	// 定义 ref, 用于获取最新的 conversationId
+	const conversationIdRef = useRef<string>();
+  useEffect(() => {
+    conversationIdRef.current = conversationId; // 实时更新 ref
+  }, [conversationId]);
 
   /**
    * 获取下一轮问题建议
@@ -110,14 +115,15 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
 
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess, onUpdate }) => {
-      console.log('进来了吗', message);
 
       // 发送消息
       const response = await difyApi.sendMessage({
         inputs: {
           target,
         },
-        conversation_id: !isTempId(conversationId) ? conversationId : undefined,
+        conversation_id: !isTempId(conversationIdRef.current)
+          ? conversationIdRef.current
+          : undefined,
         files: [],
         user: USER,
         response_mode: RESPONSE_MODE,
@@ -191,22 +197,22 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     result.data.forEach((item) => {
       newMessages.push(
         {
-          id: `${item.id}-query`,
-          message: item.query,
-          status: 'success',
-          isHistory: true,
-        },
-        {
           id: `${item.id}-answer`,
           message: item.answer,
           status: 'success',
           isHistory: true,
           feedback: item.feedback,
         },
+        {
+          id: `${item.id}-query`,
+          message: item.query,
+          status: 'success',
+          isHistory: true,
+        },
       );
     });
 
-    setHistoryMessages(newMessages);
+    setHistoryMessages(newMessages.reverse());
   };
 
   const { onRequest, messages, setMessages } = useXChat({
