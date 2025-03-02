@@ -28,6 +28,7 @@ export default defineConfig({
     }),
   ],
   server: {
+		base: '/dify-chat',
     port: 5200,
     proxy: [
       {
