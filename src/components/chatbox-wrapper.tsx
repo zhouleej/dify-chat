@@ -38,10 +38,8 @@ import {
 import { RESPONSE_MODE, USER } from '../config';
 import { MessageInfo } from '@ant-design/x/es/use-x-chat';
 import MarkdownIt from 'markdown-it';
+import { isTempId } from '../utils/utils';
 
-const isTempId = (id: string | undefined) => {
-  return id?.startsWith('temp');
-};
 interface IConversationEntryFormItem extends FormItemProps {
   type: 'input' | 'select';
 }
@@ -200,10 +198,6 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   });
 
   const initConversationInfo = async () => {
-    setInitLoading(true);
-    setFormVisible(false);
-    setMessages([]);
-    setHistoryMessages([]);
     // 有对话 ID 且非临时 ID 时，获取历史消息
     if (conversationId && !isTempId(conversationId)) {
       await getConversationMessages(conversationId);
@@ -238,6 +232,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   };
 
   useEffect(() => {
+    setInitLoading(true);
+    setFormVisible(false);
+    setMessages([]);
+    setHistoryMessages([]);
     initConversationInfo();
   }, [conversationId]);
 

@@ -7,16 +7,19 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 
 import {
+	DeleteOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
 import {
   Button,
+  message,
   type GetProp,
 } from 'antd';
 import { createDifyApiInstance, IGetAppInfoResponse, IGetAppParametersResponse } from './utils/dify-api';
 import { USER } from './config';
 import ChatboxWrapper from './components/chatbox-wrapper';
 import { Logo } from './components/logo';
+import { isTempId } from './utils/utils';
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -115,7 +118,7 @@ const XUI: React.FC = () => {
     // 如果对话 ID 不在当前列表中，则刷新一下
     if (
       curentConversationId &&
-      !conversationsItems.find((item) => item.key === curentConversationId)
+      !conversationsItems.some((item) => item.key === curentConversationId)
     ) {
       getConversationItems()
     }
@@ -142,6 +145,40 @@ const XUI: React.FC = () => {
             className="py-0 px-3 flex-1 overflow-y-auto"
             activeKey={curentConversationId}
             onActiveChange={onConversationClick}
+            menu={(conversation) => ({
+              items: [
+                {
+                  label: '删除',
+                  key: 'delete',
+                  icon: <DeleteOutlined />,
+                  danger: true,
+                },
+              ],
+              onClick: async(menuInfo) => {
+								menuInfo.domEvent.stopPropagation();
+								console.log('menuInfo', conversation);
+								if (menuInfo.key === 'delete') {
+									if (isTempId(conversation.key)) {
+										// 如果是临时对话，则直接删除
+										setConversationsItems(
+											conversationsItems.filter(
+												(item) => item.key !== conversation.key,
+											),
+										)
+										// 如果是当前对话，则清空当前对话
+										if (curentConversationId === conversation.key) {
+											setCurentConversationId(undefined);
+										}
+										message.success('删除成功');
+										return;
+									}
+									// 删除对话
+									await difyApi.deleteConversation(conversation.key);
+									message.success('删除成功');
+									getConversationItems();
+								}
+              },
+            })}
           />
         </div>
 

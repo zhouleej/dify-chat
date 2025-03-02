@@ -114,6 +114,15 @@ export class DifyApi {
     });
   }
 
+	/**
+	 * 删除会话
+	 */
+	deleteConversation = (conversation_id: string) => {
+		return baseRequest.delete(`/conversations/${conversation_id}`, {
+			user: this.options.user,
+		});
+	}
+
   /**
    * 获取会话历史消息
    */
@@ -159,7 +168,7 @@ export class DifyApi {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
-        'Content-Type': 'application/json', 
+        'Content-Type': 'application/json',
       }
     });
   }

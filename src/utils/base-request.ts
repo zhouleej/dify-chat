@@ -49,6 +49,15 @@ export class XRequest {
     })
     return result
   }
+
+	async delete(url: string, params?: Record<string, unknown>, headers: Record<string, string> = {}) {
+		const result = await this.jsonRequest(url, {
+			method: 'DELETE',
+			body: JSON.stringify(params),
+			headers
+		})
+		return result
+	}
 }
 
 export default XRequest
