@@ -234,14 +234,18 @@ export const createDifyApiInstance = (options: IDifyApiOptions) => {
  * 创建 Dify API 实例 hook
  */
 export const useDifyApi = (options: IDifyApiOptions) => {
-	const [instance, setInstance] = useState<DifyApi>(createDifyApiInstance(options));
+	const [instance, setInstance] = useState<DifyApi>();
+	const vars = getVars()
+	const isInstanceReady = !!vars.DIFY_API_KEY && !!vars.DIFY_API_BASE
 
 	useEffect(()=>{
+		if (!isInstanceReady) return
 		setInstance(createDifyApiInstance(options))
 	}, [options])
 
   return {
 		instance,
+		isInstanceReady: isInstanceReady && instance,
 		updateInstance: () => {
 			setInstance(createDifyApiInstance(options))
 		}

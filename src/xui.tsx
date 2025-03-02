@@ -1,22 +1,15 @@
-import {
-  Conversations,
-  XProvider,
-} from '@ant-design/x';
+import { Conversations, XProvider } from '@ant-design/x';
 import { createStyles } from 'antd-style';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
+import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, message, Spin, type GetProp } from 'antd';
 import {
-	DeleteOutlined,
-  PlusOutlined,
-} from '@ant-design/icons';
-import {
-  Button,
-  message,
-  Spin,
-  type GetProp,
-} from 'antd';
-import { IGetAppInfoResponse, IGetAppParametersResponse, useDifyApi } from './utils/dify-api';
+  IGetAppInfoResponse,
+  IGetAppParametersResponse,
+  useDifyApi,
+} from './utils/dify-api';
 import { USER } from './config';
 import ChatboxWrapper from './components/chatbox-wrapper';
 import { Logo } from './components/logo';
@@ -49,7 +42,11 @@ interface IConversationItem {
 
 const XUI: React.FC = () => {
   // 创建 Dify API 实例
-  const { instance: difyApi, updateInstance } = useDifyApi({ user: USER });
+  const {
+    instance: difyApi,
+    updateInstance,
+    isInstanceReady,
+  } = useDifyApi({ user: USER });
   const { styles } = useStyle();
   const [conversationsItems, setConversationsItems] = useState<
     IConversationItem[]
@@ -62,6 +59,9 @@ const XUI: React.FC = () => {
     useState<IGetAppParametersResponse>();
 
   const initAppInfo = async () => {
+    if (!difyApi) {
+      return;
+    }
     // 获取应用信息
     const [baseInfo, _meta, appParameters] = await Promise.all([
       difyApi.getAppInfo(),
@@ -75,13 +75,16 @@ const XUI: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!difyApi) {
+      return;
+    }
     initAppInfo();
   }, []);
 
   const getConversationItems = async () => {
     setCoversationListLoading(true);
     try {
-      const result = await difyApi.getConversationList();
+      const result = await difyApi?.getConversationList();
       const newItems =
         result?.data?.map((item) => {
           return {
@@ -99,6 +102,9 @@ const XUI: React.FC = () => {
   };
 
   useEffect(() => {
+    if (!isInstanceReady || !difyApi) {
+      return;
+    }
     getConversationItems();
   }, []);
 
@@ -128,6 +134,7 @@ const XUI: React.FC = () => {
   useEffect(() => {
     // 如果对话 ID 不在当前列表中，则刷新一下
     if (
+      isInstanceReady &&
       curentConversationId &&
       !conversationsItems.some((item) => item.key === curentConversationId)
     ) {
@@ -141,12 +148,16 @@ const XUI: React.FC = () => {
         {/* 左侧边栏 */}
         <div className={`${styles.menu} w-72 h-full flex flex-col`}>
           {/* 🌟 Logo */}
-          <Logo onSettingUpdated={async()=>{
-						updateInstance()
-						initAppInfo()
-						getConversationItems()
-						setCurentConversationId(undefined)
-					}} />
+          <Logo
+            onSettingUpdated={async () => {
+              updateInstance();
+              setTimeout(() => {
+                initAppInfo();
+                getConversationItems();
+                setCurentConversationId(undefined);
+              }, 500);
+            }}
+          />
           {/* 🌟 添加会话 */}
           <Button
             onClick={handleAddConversationBtnClick}

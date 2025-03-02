@@ -32,9 +32,10 @@ export default defineConfig({
     port: 5200,
     proxy: [
       {
-        target: process.env.DIFY_API_BASE,
+				// 代理 Dify API
+				target: process.env.DIFY_API_BASE || 'https://api.dify.ai',
         changeOrigin: true,
-        context: process.env.DIFY_API_VERSION,
+        context: process.env.DIFY_API_VERSION || '/v1',
       },
     ],
   },
