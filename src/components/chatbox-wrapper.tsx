@@ -358,7 +358,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         </div>
       ) : null}
 
-      <div className="flex-1 overflow-hidden mx-auto">
+      <div className="flex-1 overflow-hidden">
         {/* 有对话信息时，优先展示 */}
         {initLoading ? (
           <div className="w-full h-full flex items-center justify-center">

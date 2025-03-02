@@ -80,32 +80,34 @@ interface IWelcomePlaceholderProps {
 export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
   const { onPromptItemClick } = props;
   return (
-    <Space direction="vertical" size={16} className="flex-1 pt-8">
-      <Welcome
-        variant="borderless"
-        icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
-        title="Hello, I'm Dify Chat"
-        description="Base on Dify API, Dify Chat is a web app that can interact with AI."
-        extra={
-          <Space>
-            <Button icon={<ShareAltOutlined />} />
-            <Button icon={<EllipsisOutlined />} />
-          </Space>
-        }
-      />
-      <Prompts
-        title="Do you want?"
-        items={placeholderPromptsItems}
-        styles={{
-          list: {
-            width: '100%',
-          },
-          item: {
-            flex: 1,
-          },
-        }}
-        onItemClick={onPromptItemClick}
-      />
-    </Space>
+    <div className='flex-1 flex justify-center'>
+      <Space direction="vertical" className="pt-8 w-3/4">
+        <Welcome
+          variant="borderless"
+          icon="https://mdn.alipayobjects.com/huamei_iwk9zp/afts/img/A*s5sNRo5LjfQAAAAAAAAAAAAADgCCAQ/fmt.webp"
+          title="Hello, I'm Dify Chat"
+          description="Base on Dify API, Dify Chat is a web app that can interact with AI."
+          extra={
+            <Space>
+              <Button icon={<ShareAltOutlined />} />
+              <Button icon={<EllipsisOutlined />} />
+            </Space>
+          }
+        />
+        <Prompts
+          title="Do you want?"
+          items={placeholderPromptsItems}
+          styles={{
+            list: {
+              width: '100%',
+            },
+            item: {
+              flex: 1,
+            },
+          }}
+          onItemClick={onPromptItemClick}
+        />
+      </Space>
+    </div>
   );
 };

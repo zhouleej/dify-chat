@@ -25,19 +25,6 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
   },
 };
 
-const senderPromptsItems: GetProp<typeof Prompts, 'items'> = [
-  {
-    key: '1',
-    description: 'Hot Topics',
-    icon: <FireOutlined style={{ color: '#FF4D4F' }} />,
-  },
-  {
-    key: '2',
-    description: 'Design Guide',
-    icon: <ReadOutlined style={{ color: '#1890FF' }} />,
-  },
-];
-
 export interface ChatboxProps {
   items: GetProp<typeof Bubble.List, 'items'>;
   content: string;
