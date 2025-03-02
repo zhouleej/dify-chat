@@ -6,15 +6,16 @@ import {
   FireOutlined,
   LinkOutlined,
   ReadOutlined,
+  RobotOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
 const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
     placement: 'start',
-    avatar: { icon: <UserOutlined />, style: { background: '#fde3cf' } },
+    avatar: { icon: <RobotOutlined />, style: { background: '#fde3cf' } },
     style: {
-			// 减去一个头像的宽度
+      // 减去一个头像的宽度
       maxWidth: 'calc(100% - 44px)',
     },
   },
