@@ -16,7 +16,7 @@ import {
   Spin,
   type GetProp,
 } from 'antd';
-import { createDifyApiInstance, IGetAppInfoResponse, IGetAppParametersResponse } from './utils/dify-api';
+import { IGetAppInfoResponse, IGetAppParametersResponse, useDifyApi } from './utils/dify-api';
 import { USER } from './config';
 import ChatboxWrapper from './components/chatbox-wrapper';
 import { Logo } from './components/logo';
@@ -47,25 +47,26 @@ interface IConversationItem {
   label: string;
 }
 
-// 创建 Dify API 实例
-const difyApi = createDifyApiInstance({ user: USER });
-
 const XUI: React.FC = () => {
+  // 创建 Dify API 实例
+  const { instance: difyApi, updateInstance } = useDifyApi({ user: USER });
   const { styles } = useStyle();
   const [conversationsItems, setConversationsItems] = useState<
     IConversationItem[]
   >([]);
-  const [conversationListLoading, setCoversationListLoading] = useState<boolean>(false)
+  const [conversationListLoading, setCoversationListLoading] =
+    useState<boolean>(false);
   const [curentConversationId, setCurentConversationId] = useState<string>();
   const [appInfo, setAppInfo] = useState<IGetAppInfoResponse>();
-  const [appParameters, setAppParameters] = useState<IGetAppParametersResponse>();
+  const [appParameters, setAppParameters] =
+    useState<IGetAppParametersResponse>();
 
   const initAppInfo = async () => {
     // 获取应用信息
     const [baseInfo, _meta, appParameters] = await Promise.all([
       difyApi.getAppInfo(),
       difyApi.getAppMeta(),
-      difyApi.getAppParameters()
+      difyApi.getAppParameters(),
     ]);
     setAppInfo({
       ...baseInfo,
@@ -78,23 +79,23 @@ const XUI: React.FC = () => {
   }, []);
 
   const getConversationItems = async () => {
-		setCoversationListLoading(true);
-		try {
-			const result = await difyApi.getConversationList();
-			const newItems =
-				result?.data?.map((item) => {
-					return {
-						key: item.id,
-						label: item.name,
-					};
-				}) || [];
-			setConversationsItems(newItems);
-		} catch (error) {
-			console.error(error);
-			message.error(`获取会话列表失败: ${error}`);
-		} finally {
-			setCoversationListLoading(false);
-		}
+    setCoversationListLoading(true);
+    try {
+      const result = await difyApi.getConversationList();
+      const newItems =
+        result?.data?.map((item) => {
+          return {
+            key: item.id,
+            label: item.name,
+          };
+        }) || [];
+      setConversationsItems(newItems);
+    } catch (error) {
+      console.error(error);
+      message.error(`获取会话列表失败: ${error}`);
+    } finally {
+      setCoversationListLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -130,7 +131,7 @@ const XUI: React.FC = () => {
       curentConversationId &&
       !conversationsItems.some((item) => item.key === curentConversationId)
     ) {
-      getConversationItems()
+      getConversationItems();
     }
   }, [curentConversationId]);
 
@@ -140,7 +141,12 @@ const XUI: React.FC = () => {
         {/* 左侧边栏 */}
         <div className={`${styles.menu} w-72 h-full flex flex-col`}>
           {/* 🌟 Logo */}
-          <Logo />
+          <Logo onSettingUpdated={async()=>{
+						updateInstance()
+						initAppInfo()
+						getConversationItems()
+						setCurentConversationId(undefined)
+					}} />
           {/* 🌟 添加会话 */}
           <Button
             onClick={handleAddConversationBtnClick}
@@ -153,7 +159,7 @@ const XUI: React.FC = () => {
           <div className="py-0 px-3 flex-1 overflow-y-auto">
             <Spin spinning={conversationListLoading}>
               <Conversations
-								className='p-0'
+                className="p-0"
                 items={conversationsItems}
                 activeKey={curentConversationId}
                 onActiveChange={onConversationClick}

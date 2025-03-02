@@ -2,12 +2,14 @@ export class XRequest {
 
   constructor(options: {
     baseURL: string,
+		apiKey: string,
   }) {
     this.options = options
   }
 
   options: {
     baseURL: string,
+		apiKey: string,
   }
 
   async baseRequest(url: string, options: RequestInit) {
@@ -15,7 +17,7 @@ export class XRequest {
       ...options,
       headers: {
         ...options.headers,
-        Authorization: `Bearer ${process.env.DIFY_API_KEY}`,
+        Authorization: `Bearer ${this.options.apiKey}`,
       }
     })
     return result
@@ -61,7 +63,3 @@ export class XRequest {
 }
 
 export default XRequest
-
-export const baseRequest = new XRequest({
-	baseURL: process.env.DIFY_API_VERSION!,
-})

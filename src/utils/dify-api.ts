@@ -1,4 +1,6 @@
-import { baseRequest } from './base-request';
+import { useEffect, useState } from 'react';
+import XRequest from './base-request';
+import { getVars } from './vars';
 
 interface IUserInputForm {
   'text-input': {
@@ -82,36 +84,42 @@ export interface IGetAppMetaResponse {
 export class DifyApi {
   constructor(options: IDifyApiOptions) {
     this.options = options;
+		const runtimeVars = getVars()
+		this.baseRequest = new XRequest({
+			baseURL: `${runtimeVars.DIFY_API_BASE || ''}${runtimeVars.DIFY_API_VERSION}`,
+			apiKey: runtimeVars.DIFY_API_KEY
+		})
   }
 
   options: IDifyApiOptions;
+	baseRequest: XRequest;
 
   /**
    * 获取应用基本信息
    */
   async getAppInfo(): Promise<IGetAppInfoResponse> {
-    return baseRequest.get('/info');
+    return this.baseRequest.get('/info');
   }
 
   /**
    * 获取应用 Meta 信息
    */
   async getAppMeta(): Promise<IGetAppMetaResponse> {
-    return baseRequest.get('/meta');
+    return this.baseRequest.get('/meta');
   }
 
   /**
    * 获取应用参数
    */
   getAppParameters = (): Promise<IGetAppParametersResponse> => {
-    return baseRequest.get('/parameters');
+    return this.baseRequest.get('/parameters');
   };
 
   /**
    * 获取当前用户的会话列表（默认返回最近20条）
    */
   getConversationList(params?: IGetConversationListRequest): Promise<IGetConversationListResponse> {
-    return baseRequest.get('/conversations', {
+    return this.baseRequest.get('/conversations', {
       user: this.options.user,
       limit: params?.limit || 100
     });
@@ -121,7 +129,7 @@ export class DifyApi {
 	 * 删除会话
 	 */
 	deleteConversation = (conversation_id: string) => {
-		return baseRequest.delete(`/conversations/${conversation_id}`, {
+		return this.baseRequest.delete(`/conversations/${conversation_id}`, {
 			user: this.options.user,
 		});
 	}
@@ -132,7 +140,7 @@ export class DifyApi {
   getConversationHistory = (
     conversation_id: string,
   ): Promise<IGetConversationHistoryResponse> => {
-    return baseRequest.get(`/messages`, {
+    return this.baseRequest.get(`/messages`, {
       user: this.options.user,
       conversation_id,
     });
@@ -167,7 +175,7 @@ export class DifyApi {
      */
     query: string;
   }) {
-    return baseRequest.baseRequest('/chat-messages', {
+    return this.baseRequest.baseRequest('/chat-messages', {
       method: 'POST',
       body: JSON.stringify(params),
       headers: {
@@ -185,7 +193,7 @@ export class DifyApi {
 		 */
 		message_id: string;
 	}) {
-		return baseRequest.get(`/messages/${params.message_id}/suggested`, {
+		return this.baseRequest.get(`/messages/${params.message_id}/suggested`, {
 			user: this.options.user,
 		});
 	}
@@ -208,7 +216,7 @@ export class DifyApi {
      content: string
   }) {
     const { messageId, ...restParams } = params
-    return baseRequest.post(`/messages/${messageId}/feedbacks`, {
+    return this.baseRequest.post(`/messages/${messageId}/feedbacks`, {
       ...restParams,
       user: this.options.user,
     })
@@ -220,4 +228,22 @@ export class DifyApi {
  */
 export const createDifyApiInstance = (options: IDifyApiOptions) => {
   return new DifyApi(options);
+};
+
+/**
+ * 创建 Dify API 实例 hook
+ */
+export const useDifyApi = (options: IDifyApiOptions) => {
+	const [instance, setInstance] = useState<DifyApi>(createDifyApiInstance(options));
+
+	useEffect(()=>{
+		setInstance(createDifyApiInstance(options))
+	}, [options])
+
+  return {
+		instance,
+		updateInstance: () => {
+			setInstance(createDifyApiInstance(options))
+		}
+	}
 };
