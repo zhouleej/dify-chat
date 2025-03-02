@@ -13,6 +13,7 @@ import {
 import {
   Button,
   message,
+  Spin,
   type GetProp,
 } from 'antd';
 import { createDifyApiInstance, IGetAppInfoResponse, IGetAppParametersResponse } from './utils/dify-api';
@@ -54,6 +55,7 @@ const XUI: React.FC = () => {
   const [conversationsItems, setConversationsItems] = useState<
     IConversationItem[]
   >([]);
+  const [conversationListLoading, setCoversationListLoading] = useState<boolean>(false)
   const [curentConversationId, setCurentConversationId] = useState<string>();
   const [appInfo, setAppInfo] = useState<IGetAppInfoResponse>();
   const [appParameters, setAppParameters] = useState<IGetAppParametersResponse>();
@@ -76,15 +78,23 @@ const XUI: React.FC = () => {
   }, []);
 
   const getConversationItems = async () => {
-    const result = await difyApi.getConversationList();
-    const newItems =
-      result?.data?.map((item) => {
-        return {
-          key: item.id,
-          label: item.name,
-        };
-      }) || [];
-    setConversationsItems(newItems);
+		setCoversationListLoading(true);
+		try {
+			const result = await difyApi.getConversationList();
+			const newItems =
+				result?.data?.map((item) => {
+					return {
+						key: item.id,
+						label: item.name,
+					};
+				}) || [];
+			setConversationsItems(newItems);
+		} catch (error) {
+			console.error(error);
+			message.error(`获取会话列表失败: ${error}`);
+		} finally {
+			setCoversationListLoading(false);
+		}
   };
 
   useEffect(() => {
@@ -140,46 +150,49 @@ const XUI: React.FC = () => {
             New Conversation
           </Button>
           {/* 🌟 会话管理 */}
-          <Conversations
-            items={conversationsItems}
-            className="py-0 px-3 flex-1 overflow-y-auto"
-            activeKey={curentConversationId}
-            onActiveChange={onConversationClick}
-            menu={(conversation) => ({
-              items: [
-                {
-                  label: '删除',
-                  key: 'delete',
-                  icon: <DeleteOutlined />,
-                  danger: true,
-                },
-              ],
-              onClick: async(menuInfo) => {
-								menuInfo.domEvent.stopPropagation();
-								console.log('menuInfo', conversation);
-								if (menuInfo.key === 'delete') {
-									if (isTempId(conversation.key)) {
-										// 如果是临时对话，则直接删除
-										setConversationsItems(
-											conversationsItems.filter(
-												(item) => item.key !== conversation.key,
-											),
-										)
-										// 如果是当前对话，则清空当前对话
-										if (curentConversationId === conversation.key) {
-											setCurentConversationId(undefined);
-										}
-										message.success('删除成功');
-										return;
-									}
-									// 删除对话
-									await difyApi.deleteConversation(conversation.key);
-									message.success('删除成功');
-									getConversationItems();
-								}
-              },
-            })}
-          />
+          <div className="py-0 px-3 flex-1 overflow-y-auto">
+            <Spin spinning={conversationListLoading}>
+              <Conversations
+								className='p-0'
+                items={conversationsItems}
+                activeKey={curentConversationId}
+                onActiveChange={onConversationClick}
+                menu={(conversation) => ({
+                  items: [
+                    {
+                      label: '删除',
+                      key: 'delete',
+                      icon: <DeleteOutlined />,
+                      danger: true,
+                    },
+                  ],
+                  onClick: async (menuInfo) => {
+                    menuInfo.domEvent.stopPropagation();
+                    console.log('menuInfo', conversation);
+                    if (menuInfo.key === 'delete') {
+                      if (isTempId(conversation.key)) {
+                        // 如果是临时对话，则直接删除
+                        setConversationsItems(
+                          conversationsItems.filter(
+                            (item) => item.key !== conversation.key,
+                          ),
+                        );
+                        message.success('删除成功');
+                      } else {
+                        // 否则调用删除接口
+                        await difyApi.deleteConversation(conversation.key);
+                        message.success('删除成功');
+                        getConversationItems();
+                      }
+                      if (curentConversationId === conversation.key) {
+                        setCurentConversationId(undefined);
+                      }
+                    }
+                  },
+                })}
+              />
+            </Spin>
+          </div>
         </div>
 
         {/* 右侧聊天窗口 */}
