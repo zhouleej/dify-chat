@@ -11,6 +11,9 @@ interface IUserInputForm {
 
 export interface IGetAppParametersResponse {
   user_input_form: IUserInputForm[];
+	suggested_questions_after_answer: {
+		enabled: boolean;
+	}
 }
 
 interface IConversationItem {
@@ -172,6 +175,20 @@ export class DifyApi {
       }
     });
   }
+
+	/**
+	 * 获取下一轮建议问题列表
+	 */
+	async getNextSuggestions(params: {
+		/**
+		 * 消息 ID
+		 */
+		message_id: string;
+	}) {
+		return baseRequest.get(`/messages/${params.message_id}/suggested`, {
+			user: this.options.user,
+		});
+	}
 
   /**
    * 消息反馈

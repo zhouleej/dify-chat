@@ -42,6 +42,10 @@ export interface ChatboxProps {
   items: GetProp<typeof Bubble.List, 'items'>;
   content: string;
   isRequesting: boolean;
+	/**
+	 * 下一步问题建议
+	 */
+  nextSuggestions: string[];
   onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'>;
   onChange: (value: string) => void;
   onSubmit: (value: string) => void;
@@ -54,6 +58,7 @@ export const Chatbox = ({
   items,
   content,
   isRequesting,
+	nextSuggestions,
   onPromptsItemClick,
   onChange,
   onSubmit,
@@ -86,7 +91,12 @@ export const Chatbox = ({
         }}>
           {/* 🌟 提示词 */}
           <Prompts
-            items={senderPromptsItems}
+            items={nextSuggestions.map((item, index)=>{
+							return {
+								key: index.toString(),
+								description: item,
+							}
+						})}
             onItemClick={onPromptsItemClick}
           />
           {/* 🌟 输入框 */}

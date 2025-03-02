@@ -97,6 +97,16 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   >([]);
   const [formVisible, setFormVisible] = useState<boolean>(false);
 
+  const [nextSuggestions, setNextSuggestions] = useState<string[]>([]);
+
+  /**
+   * 获取下一轮问题建议
+   */
+  const getNextSuggestions = async (message_id: string) => {
+    const result = await difyApi.getNextSuggestions({ message_id });
+    setNextSuggestions(result.data);
+  };
+
   const [agent] = useXAgent({
     request: async ({ message }, { onSuccess, onUpdate }) => {
       console.log('进来了吗', message);
@@ -118,13 +128,13 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
       for await (const chunk of XStream({
         readableStream: response.body as NonNullable<ReadableStream>,
       })) {
-        console.log('new chunk', chunk);
         if (chunk.data) {
           console.log('chunk.data', chunk.data);
           let parsedData = {} as {
             event: string;
             answer: string;
             conversation_id: string;
+            message_id: string;
           };
           try {
             parsedData = JSON.parse(chunk.data);
@@ -133,6 +143,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           }
           if (parsedData.event === 'message_end') {
             onSuccess(result);
+						// 如果开启了建议问题，获取下一轮问题建议
+						if (appParameters?.suggested_questions_after_answer.enabled) {
+							getNextSuggestions(parsedData.message_id);
+						}
           }
           if (!parsedData.answer) {
             console.log('没有数据', chunk);
@@ -382,6 +396,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           </div>
         ) : conversationId ? (
           <Chatbox
+						nextSuggestions={nextSuggestions}
             items={items}
             content={content}
             isRequesting={agent.isRequesting()}
