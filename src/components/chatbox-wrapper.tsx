@@ -313,10 +313,11 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               onClick={async () => {
                 await difyApi.feedbackMessage({
                   messageId: (id as string).replace('-answer', ''),
-                  rating: 'like',
+                  rating: isLiked ? null : 'like',
                   content: '',
                 });
-                antdMessage.success('点赞成功');
+                antdMessage.success('操作成功');
+								getConversationMessages(conversationId!)
               }}
             />
             <Button
@@ -329,10 +330,11 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               onClick={async () => {
                 await difyApi.feedbackMessage({
                   messageId: (id as string).replace('-answer', ''),
-                  rating: 'dislike',
+                  rating: isDisLiked ? null : 'dislike',
                   content: '',
                 });
-                antdMessage.success('点踩成功');
+                antdMessage.success('操作成功');
+								getConversationMessages(conversationId!);
               }}
             />
           </Space>
