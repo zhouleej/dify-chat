@@ -230,22 +230,26 @@ export const createDifyApiInstance = (options: IDifyApiOptions) => {
   return new DifyApi(options);
 };
 
+const isInstanceReady = () => {
+	const vars = getVars()
+	return !!vars.DIFY_API_KEY && !!vars.DIFY_API_BASE
+}
+
 /**
  * 创建 Dify API 实例 hook
  */
 export const useDifyApi = (options: IDifyApiOptions) => {
 	const [instance, setInstance] = useState<DifyApi>();
-	const vars = getVars()
-	const isInstanceReady = !!vars.DIFY_API_KEY && !!vars.DIFY_API_BASE
 
 	useEffect(()=>{
-		if (!isInstanceReady) return
-		setInstance(createDifyApiInstance(options))
+		if (options && isInstanceReady()) {
+			setInstance(createDifyApiInstance(options))
+		}
 	}, [options])
 
   return {
 		instance,
-		isInstanceReady: isInstanceReady && instance,
+		isInstanceReady: isInstanceReady() && instance,
 		updateInstance: () => {
 			setInstance(createDifyApiInstance(options))
 		}

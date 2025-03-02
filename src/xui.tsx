@@ -40,13 +40,15 @@ interface IConversationItem {
   label: string;
 }
 
+const difyApiOptions = { user: USER };
+
 const XUI: React.FC = () => {
   // 创建 Dify API 实例
   const {
     instance: difyApi,
     updateInstance,
     isInstanceReady,
-  } = useDifyApi({ user: USER });
+  } = useDifyApi(difyApiOptions);
   const { styles } = useStyle();
   const [conversationsItems, setConversationsItems] = useState<
     IConversationItem[]
@@ -75,11 +77,10 @@ const XUI: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!difyApi) {
-      return;
-    }
     initAppInfo();
-  }, []);
+    getConversationItems();
+    setCurentConversationId(undefined);
+  }, [difyApi]);
 
   const getConversationItems = async () => {
     setCoversationListLoading(true);
@@ -151,11 +152,6 @@ const XUI: React.FC = () => {
           <Logo
             onSettingUpdated={async () => {
               updateInstance();
-              setTimeout(() => {
-                initAppInfo();
-                getConversationItems();
-                setCurentConversationId(undefined);
-              }, 500);
             }}
           />
           {/* 🌟 添加会话 */}
