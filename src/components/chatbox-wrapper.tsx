@@ -39,6 +39,7 @@ import { RESPONSE_MODE, USER } from '../config';
 import { MessageInfo } from '@ant-design/x/es/use-x-chat';
 import MarkdownIt from 'markdown-it';
 import { isTempId } from '../utils/utils';
+import { copyToClipboard } from '@toolkit-fe/clipboard'
 
 interface IConversationEntryFormItem extends FormItemProps {
   type: 'input' | 'select';
@@ -304,6 +305,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               variant="text"
               size="small"
               icon={<CopyOutlined />}
+              onClick={async() => {
+								await copyToClipboard(message);
+								antdMessage.success('复制成功')
+							}}
             />
             <Button
               color="default"
@@ -317,7 +322,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
                   content: '',
                 });
                 antdMessage.success('操作成功');
-								getConversationMessages(conversationId!)
+                getConversationMessages(conversationId!);
               }}
             />
             <Button
@@ -325,7 +330,9 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               variant="text"
               size="small"
               icon={
-                <DislikeOutlined className={isDisLiked ? 'text-blue-700' : ''} />
+                <DislikeOutlined
+                  className={isDisLiked ? 'text-blue-700' : ''}
+                />
               }
               onClick={async () => {
                 await difyApi.feedbackMessage({
@@ -334,7 +341,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
                   content: '',
                 });
                 antdMessage.success('操作成功');
-								getConversationMessages(conversationId!);
+                getConversationMessages(conversationId!);
               }}
             />
           </Space>
