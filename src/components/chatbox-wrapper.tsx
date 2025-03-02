@@ -200,6 +200,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           message: item.answer,
           status: 'success',
           isHistory: true,
+          feedback: item.feedback,
         },
       );
     });
@@ -280,6 +281,8 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     return [...historyMessages, ...messages].map((messageItem) => {
       const { id, message, status } = messageItem;
       const isQuery = id.toString().endsWith('query');
+			const isLiked = messageItem.feedback?.rating === 'like';
+			const isDisLiked = messageItem.feedback?.rating === 'dislike';
       return {
         key: id,
         // 不要开启 loading 和 typing, 否则流式会无效
@@ -306,13 +309,13 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               color="default"
               variant="text"
               size="small"
-              icon={<LikeOutlined />}
-              onClick={async() => {
+              icon={<LikeOutlined className={isLiked ? 'text-blue-700' : ''} />}
+              onClick={async () => {
                 await difyApi.feedbackMessage({
                   messageId: (id as string).replace('-answer', ''),
                   rating: 'like',
-                  content: ''
-                })
+                  content: '',
+                });
                 antdMessage.success('点赞成功');
               }}
             />
@@ -320,13 +323,15 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
               color="default"
               variant="text"
               size="small"
-              icon={<DislikeOutlined />}
-              onClick={async() => {
+              icon={
+                <DislikeOutlined className={isDisLiked ? 'text-blue-700' : ''} />
+              }
+              onClick={async () => {
                 await difyApi.feedbackMessage({
                   messageId: (id as string).replace('-answer', ''),
                   rating: 'dislike',
-                  content: ''
-                })
+                  content: '',
+                });
                 antdMessage.success('点踩成功');
               }}
             />
