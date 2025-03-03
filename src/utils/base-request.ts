@@ -1,3 +1,5 @@
+import { DIFY_INFO } from "./vars"
+
 export class XRequest {
 
   constructor(options: {
@@ -20,6 +22,13 @@ export class XRequest {
         Authorization: `Bearer ${this.options.apiKey}`,
       }
     })
+    if (result.headers.get('X-Version')) {
+      const newDifyVersion = result.headers.get('X-Version')
+      // 比较本地缓存的版本和当前版本
+      if (newDifyVersion && newDifyVersion !== DIFY_INFO.version) {
+        DIFY_INFO.version = newDifyVersion
+      }
+    }
     return result
   }
 

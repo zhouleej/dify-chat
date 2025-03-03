@@ -40,6 +40,7 @@ import { MessageInfo } from '@ant-design/x/es/use-x-chat';
 import MarkdownIt from 'markdown-it';
 import { isTempId } from '../utils/utils';
 import { copyToClipboard } from '@toolkit-fe/clipboard'
+import { DIFY_INFO } from '../utils/vars';
 
 interface IConversationEntryFormItem extends FormItemProps {
   type: 'input' | 'select';
@@ -196,8 +197,20 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
       setTarget(result.data[0]?.inputs?.target);
     }
 
-    result.data.forEach((item) => {
+    const difyVersion = DIFY_INFO.version
+    let baseData = result.data
+    // Dify 1.0 以上版本的消息列表是按从新到旧的顺序返回的，需要倒序一下
+    if (Number(difyVersion) >= 1) {
+      baseData = baseData.reverse()
+    } 
+    baseData.forEach((item) => {
       newMessages.push(
+        {
+          id: `${item.id}-query`,
+          message: item.query,
+          status: 'success',
+          isHistory: true,
+        },
         {
           id: `${item.id}-answer`,
           message: item.answer,
@@ -205,16 +218,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           isHistory: true,
           feedback: item.feedback,
         },
-        {
-          id: `${item.id}-query`,
-          message: item.query,
-          status: 'success',
-          isHistory: true,
-        },
-      );
-    });
+      )
+    })
 
-    setHistoryMessages(newMessages.reverse());
+    setHistoryMessages(newMessages);
   };
 
   const { onRequest, messages, setMessages } = useXChat({
