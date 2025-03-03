@@ -13,9 +13,9 @@ interface IUserInputForm {
 
 export interface IGetAppParametersResponse {
   user_input_form: IUserInputForm[];
-	suggested_questions_after_answer: {
-		enabled: boolean;
-	}
+  suggested_questions_after_answer: {
+    enabled: boolean;
+  };
 }
 
 interface IConversationItem {
@@ -32,7 +32,7 @@ interface IGetConversationListRequest {
   /**
    * 返回条数
    */
-  limit: number
+  limit: number;
 }
 
 interface IGetConversationListResponse {
@@ -84,15 +84,18 @@ export interface IGetAppMetaResponse {
 export class DifyApi {
   constructor(options: IDifyApiOptions) {
     this.options = options;
-		const runtimeVars = getVars()
-		this.baseRequest = new XRequest({
-			baseURL: process.env.NODE_ENV === 'development' ? runtimeVars.DIFY_API_VERSION : `${runtimeVars.DIFY_API_BASE || ''}${runtimeVars.DIFY_API_VERSION}`,
-			apiKey: runtimeVars.DIFY_API_KEY
-		})
+    const runtimeVars = getVars();
+    this.baseRequest = new XRequest({
+      baseURL:
+        process.env.NODE_ENV === 'development'
+          ? runtimeVars.DIFY_API_VERSION
+          : `${runtimeVars.DIFY_API_BASE || ''}${runtimeVars.DIFY_API_VERSION}`,
+      apiKey: runtimeVars.DIFY_API_KEY,
+    });
   }
 
   options: IDifyApiOptions;
-	baseRequest: XRequest;
+  baseRequest: XRequest;
 
   /**
    * 获取应用基本信息
@@ -118,21 +121,47 @@ export class DifyApi {
   /**
    * 获取当前用户的会话列表（默认返回最近20条）
    */
-  getConversationList(params?: IGetConversationListRequest): Promise<IGetConversationListResponse> {
+  getConversationList(
+    params?: IGetConversationListRequest,
+  ): Promise<IGetConversationListResponse> {
     return this.baseRequest.get('/conversations', {
       user: this.options.user,
-      limit: params?.limit || 100
+      limit: params?.limit || 100,
     });
   }
 
-	/**
-	 * 删除会话
-	 */
-	deleteConversation = (conversation_id: string) => {
-		return this.baseRequest.delete(`/conversations/${conversation_id}`, {
-			user: this.options.user,
-		});
-	}
+  /**
+   * 会话重命名
+   */
+  renameConversation = (params: {
+    /**
+     * 会话 ID
+     */
+    conversation_id: string;
+    /**
+     * 名称，若 auto_generate 为 true 时，该参数可不传。
+     */
+    name?: string;
+    /**
+     * 自动生成标题，默认 false
+     */
+    auto_generate?: boolean;
+  }) => {
+    const { conversation_id, ...restParams } = params;
+    return this.baseRequest.post(`/conversations/${conversation_id}/name`, {
+      ...restParams,
+      user: this.options.user,
+    });
+  };
+
+  /**
+   * 删除会话
+   */
+  deleteConversation = (conversation_id: string) => {
+    return this.baseRequest.delete(`/conversations/${conversation_id}`, {
+      user: this.options.user,
+    });
+  };
 
   /**
    * 获取会话历史消息
@@ -180,23 +209,23 @@ export class DifyApi {
       body: JSON.stringify(params),
       headers: {
         'Content-Type': 'application/json',
-      }
+      },
     });
   }
 
-	/**
-	 * 获取下一轮建议问题列表
-	 */
-	async getNextSuggestions(params: {
-		/**
-		 * 消息 ID
-		 */
-		message_id: string;
-	}) {
-		return this.baseRequest.get(`/messages/${params.message_id}/suggested`, {
-			user: this.options.user,
-		});
-	}
+  /**
+   * 获取下一轮建议问题列表
+   */
+  async getNextSuggestions(params: {
+    /**
+     * 消息 ID
+     */
+    message_id: string;
+  }) {
+    return this.baseRequest.get(`/messages/${params.message_id}/suggested`, {
+      user: this.options.user,
+    });
+  }
 
   /**
    * 消息反馈
@@ -205,21 +234,21 @@ export class DifyApi {
     /**
      * 消息 ID
      */
-     messageId: string
-     /**
-      * 反馈类型 like-点赞 dislike-点踩 null-取消
-      */
-     rating: 'like' | 'dislike' | null
-     /**
-      * 反馈内容
-      */
-     content: string
+    messageId: string;
+    /**
+     * 反馈类型 like-点赞 dislike-点踩 null-取消
+     */
+    rating: 'like' | 'dislike' | null;
+    /**
+     * 反馈内容
+     */
+    content: string;
   }) {
-    const { messageId, ...restParams } = params
+    const { messageId, ...restParams } = params;
     return this.baseRequest.post(`/messages/${messageId}/feedbacks`, {
       ...restParams,
       user: this.options.user,
-    })
+    });
   }
 }
 
@@ -231,27 +260,27 @@ export const createDifyApiInstance = (options: IDifyApiOptions) => {
 };
 
 const isInstanceReady = () => {
-	const vars = getVars()
-	return !!vars.DIFY_API_KEY && !!vars.DIFY_API_BASE
-}
+  const vars = getVars();
+  return !!vars.DIFY_API_KEY && !!vars.DIFY_API_BASE;
+};
 
 /**
  * 创建 Dify API 实例 hook
  */
 export const useDifyApi = (options: IDifyApiOptions) => {
-	const [instance, setInstance] = useState<DifyApi>();
+  const [instance, setInstance] = useState<DifyApi>();
 
-	useEffect(()=>{
-		if (options && isInstanceReady()) {
-			setInstance(createDifyApiInstance(options))
-		}
-	}, [options])
+  useEffect(() => {
+    if (options && isInstanceReady()) {
+      setInstance(createDifyApiInstance(options));
+    }
+  }, [options]);
 
   return {
-		instance,
-		isInstanceReady: isInstanceReady() && instance,
-		updateInstance: () => {
-			setInstance(createDifyApiInstance(options))
-		}
-	}
+    instance,
+    isInstanceReady: isInstanceReady() && instance,
+    updateInstance: () => {
+      setInstance(createDifyApiInstance(options));
+    },
+  };
 };

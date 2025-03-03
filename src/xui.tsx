@@ -3,7 +3,7 @@ import { createStyles } from 'antd-style';
 import React, { useEffect, useState } from 'react';
 import './App.css';
 
-import { DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, message, Spin, type GetProp } from 'antd';
 import {
   IGetAppInfoResponse,
@@ -13,7 +13,7 @@ import {
 import { USER } from './config';
 import ChatboxWrapper from './components/chatbox-wrapper';
 import { Logo } from './components/logo';
-import { isTempId } from './utils/utils';
+import ConversationList, { IConversationItem } from './components/conversation-list';
 
 const useStyle = createStyles(({ token, css }) => {
   return {
@@ -34,11 +34,6 @@ const useStyle = createStyles(({ token, css }) => {
     `,
   };
 });
-
-interface IConversationItem {
-  key: string;
-  label: string;
-}
 
 const difyApiOptions = { user: USER };
 
@@ -165,44 +160,13 @@ const XUI: React.FC = () => {
           {/* 🌟 会话管理 */}
           <div className="py-0 px-3 flex-1 overflow-y-auto">
             <Spin spinning={conversationListLoading}>
-              <Conversations
-                className="p-0"
+              <ConversationList 
+                difyApi={difyApi!}
                 items={conversationsItems}
                 activeKey={curentConversationId}
                 onActiveChange={onConversationClick}
-                menu={(conversation) => ({
-                  items: [
-                    {
-                      label: '删除',
-                      key: 'delete',
-                      icon: <DeleteOutlined />,
-                      danger: true,
-                    },
-                  ],
-                  onClick: async (menuInfo) => {
-                    menuInfo.domEvent.stopPropagation();
-                    console.log('menuInfo', conversation);
-                    if (menuInfo.key === 'delete') {
-                      if (isTempId(conversation.key)) {
-                        // 如果是临时对话，则直接删除
-                        setConversationsItems(
-                          conversationsItems.filter(
-                            (item) => item.key !== conversation.key,
-                          ),
-                        );
-                        message.success('删除成功');
-                      } else {
-                        // 否则调用删除接口
-                        await difyApi.deleteConversation(conversation.key);
-                        message.success('删除成功');
-                        getConversationItems();
-                      }
-                      if (curentConversationId === conversation.key) {
-                        setCurentConversationId(undefined);
-                      }
-                    }
-                  },
-                })}
+                onItemsChange={setConversationsItems}
+                refreshItems={getConversationItems}
               />
             </Spin>
           </div>
@@ -211,7 +175,7 @@ const XUI: React.FC = () => {
         {/* 右侧聊天窗口 */}
         <ChatboxWrapper
           appInfo={appInfo}
-          difyApi={difyApi}
+          difyApi={difyApi!}
           conversationId={curentConversationId}
           conversationName={
             conversationsItems.find((item) => item.key === curentConversationId)
