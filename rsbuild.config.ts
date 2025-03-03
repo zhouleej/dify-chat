@@ -8,7 +8,6 @@ export default defineConfig({
   source: {
     define: {
       'process.env.DIFY_API_KEY': JSON.stringify(process.env.DIFY_API_KEY),
-      'process.env.DIFY_APP_ID': JSON.stringify(process.env.DIFY_APP_ID),
       'process.env.DIFY_API_BASE': JSON.stringify(process.env.DIFY_API_BASE),
       'process.env.DIFY_API_VERSION': JSON.stringify(process.env.DIFY_API_VERSION),
     }
