@@ -43,6 +43,20 @@ import { isTempId } from '../utils/utils';
 import { copyToClipboard } from '@toolkit-fe/clipboard'
 import { DIFY_INFO } from '../utils/vars';
 
+/**
+ * 消息对象中的文件 item
+ */
+interface IMessageFileItem {
+  id: string;
+  filename: string;
+  type: string;
+  url: string;
+  mime_type: string;
+  size: number;
+  transfer_method: string;
+  belongs_to: string;
+}
+
 interface IConversationEntryFormItem extends FormItemProps {
   type: 'input' | 'select';
 }
@@ -212,6 +226,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           message: item.query,
           status: 'success',
           isHistory: true,
+          message_files: item.message_files,
         },
         {
           id: `${item.id}-answer`,
@@ -291,7 +306,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   const items: GetProp<typeof Bubble.List, 'items'> = useMemo(() => {
     console.log('message变更', [...historyMessages, ...messages]);
     return [...historyMessages, ...messages].map((messageItem) => {
-      const { id, message, status } = messageItem;
+      const { id, message, status, message_files } = messageItem;
       const isQuery = id.toString().endsWith('query');
 			const isLiked = messageItem.feedback?.rating === 'like';
 			const isDisLiked = messageItem.feedback?.rating === 'dislike';
@@ -300,7 +315,23 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         // 不要开启 loading 和 typing, 否则流式会无效
         // loading: status === 'loading',
         content: message,
-        messageRender: renderMarkdown,
+        messageRender: (content: string) => {
+          return <>
+          {/* 用户发送的图片列表 */}
+          <>
+          {
+            message_files?.length ?
+            message_files.map((item: IMessageFileItem)=>{
+              return (
+                <img src={item.url} key={item.id} alt={item.filename} />
+              )
+            })
+            : null
+          }
+          </>
+          {renderMarkdown(content)}
+          </>
+        },
         // 用户发送消息时，status 为 local，需要展示为用户头像
         role: isQuery || status === 'local' ? 'user' : 'ai',
         footer: isQuery ? null : (
