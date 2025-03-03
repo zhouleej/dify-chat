@@ -78,6 +78,41 @@ export interface IGetAppMetaResponse {
   };
 }
 
+export interface IFileBase {
+  /**
+   * 支持类型：图片 image（目前仅支持图片格式）
+   */
+  type: 'image';
+}
+
+export interface IFileRemote extends IFileBase  {
+  /**
+   * 支持类型：图片 image（目前仅支持图片格式）
+   */
+  type: 'image';
+  /**
+   * 传递方式 remote_url-远程地址 local_file-本地文件
+   */
+  transfer_method: 'remote_url';
+  /**
+   * 图片地址（仅当传递方式为 remote_url 时）
+   */
+  url?: string
+}
+
+export interface IFileLocal extends IFileBase  {
+  /**
+   * 传递方式 remote_url-远程地址 local_file-本地文件
+   */
+  transfer_method:'local_file';
+  /**
+   * 上传文件 ID（仅当传递方式为 local_file 时）
+   */
+  upload_file_id?: string
+}
+
+export type IFile = IFileRemote | IFileLocal;
+
 /**
  * Dify API 类
  */
@@ -190,7 +225,7 @@ export class DifyApi {
     /**
      * 附件
      */
-    files: [];
+    files: IFile[];
     /**
      * 用户
      */
@@ -211,6 +246,19 @@ export class DifyApi {
         'Content-Type': 'application/json',
       },
     });
+  }
+
+  /**
+   * 上传文件
+   */
+  async uploadFile(file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('user', this.options.user);
+    return this.baseRequest.baseRequest('/files/upload', {
+      method: 'POST',
+      body: formData,
+    }).then(res=>res.json())
   }
 
   /**

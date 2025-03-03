@@ -23,6 +23,7 @@ import {
 import { Chatbox } from './chatbox';
 import {
   DifyApi,
+  IFile,
   IGetAppInfoResponse,
   IGetAppParametersResponse,
 } from '../utils/dify-api';
@@ -107,6 +108,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     conversationIdRef.current = conversationId; // 实时更新 ref
     difyApiRef.current = difyApi; // 实时更新 ref
   }, [conversationId]);
+  const filesRef = useRef<IFile[]>([]);
 
   /**
    * 获取下一轮问题建议
@@ -127,7 +129,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
         conversation_id: !isTempId(conversationIdRef.current)
           ? conversationIdRef.current
           : undefined,
-        files: [],
+        files: filesRef.current || [],
         user: USER,
         response_mode: RESPONSE_MODE,
         query: message!,
@@ -274,12 +276,9 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     onRequest(info.data.description as string);
   };
 
-  const onSubmit = (nextContent: string) => {
-    console.log('enter onSubmit', nextContent);
-    if (!nextContent) return;
-    console.log('onSubmit', nextContent);
+  const onSubmit = (nextContent: string, files?: IFile[]) => {
+    filesRef.current = files || [];
     onRequest(nextContent);
-    setContent('');
   };
 
   const renderMarkdown: BubbleProps['messageRender'] = (content) => (
@@ -289,9 +288,6 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     </Typography>
   );
 
-  const onChange = (nextContent: string) => {
-    setContent(nextContent);
-  };
   const items: GetProp<typeof Bubble.List, 'items'> = useMemo(() => {
     console.log('message变更', [...historyMessages, ...messages]);
     return [...historyMessages, ...messages].map((messageItem) => {
@@ -427,11 +423,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
           <Chatbox
 						nextSuggestions={nextSuggestions}
             items={items}
-            content={content}
             isRequesting={agent.isRequesting()}
             onPromptsItemClick={onPromptsItemClick}
-            onChange={onChange}
             onSubmit={onSubmit}
+            difyApi={difyApi}
           />
         ) : appInfo ? (
           <div className="w-full h-full flex items-center justify-center text-black">

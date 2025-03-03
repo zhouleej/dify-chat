@@ -1,14 +1,13 @@
-import { Attachments, Bubble, Prompts, Sender } from '@ant-design/x';
+import { Bubble, Prompts } from '@ant-design/x';
 import { WelcomePlaceholder } from './welcome-placeholder';
-import { Button, GetProp } from 'antd';
+import { GetProp } from 'antd';
 import {
-  CloudUploadOutlined,
-  FireOutlined,
-  LinkOutlined,
-  ReadOutlined,
   RobotOutlined,
   UserOutlined,
 } from '@ant-design/icons';
+import { useState } from 'react';
+import SenderWrapper from './sender';
+import { DifyApi, IFile } from '../utils/dify-api';
 
 const roles: GetProp<typeof Bubble.List, 'roles'> = {
   ai: {
@@ -27,15 +26,14 @@ const roles: GetProp<typeof Bubble.List, 'roles'> = {
 
 export interface ChatboxProps {
   items: GetProp<typeof Bubble.List, 'items'>;
-  content: string;
   isRequesting: boolean;
 	/**
 	 * 下一步问题建议
 	 */
   nextSuggestions: string[];
   onPromptsItemClick: GetProp<typeof Prompts, 'onItemClick'>;
-  onChange: (value: string) => void;
-  onSubmit: (value: string) => void;
+  onSubmit: (value: string, files?: IFile[]) => void;
+  difyApi: DifyApi
 }
 
 /**
@@ -43,26 +41,14 @@ export interface ChatboxProps {
  */
 export const Chatbox = ({
   items,
-  content,
   isRequesting,
 	nextSuggestions,
   onPromptsItemClick,
-  onChange,
   onSubmit,
+  difyApi,
 }: ChatboxProps) => {
-  // 文件上传
-  const attachmentsNode = (
-    <Attachments
-      beforeUpload={() => false}
-      placeholder={{
-        icon: <CloudUploadOutlined />,
-        title: 'Drag & Drop files here',
-        description: 'Support file type: image, video, audio, document, etc.',
-      }}
-    >
-      <Button type="text" icon={<LinkOutlined />} />
-    </Attachments>
-  );
+
+  const [content, setContent] = useState('');
 
   return (
     <div className="w-full h-full overflow-hidden my-0 mx-auto box-border flex flex-col gap-4 relative">
@@ -87,13 +73,19 @@ export const Chatbox = ({
             onItemClick={onPromptsItemClick}
           />
           {/* 🌟 输入框 */}
-          <Sender
-            value={content}
-            onChange={onChange}
-            onSubmit={onSubmit}
-            prefix={attachmentsNode}
-            loading={isRequesting}
+          <SenderWrapper
+            content={content}
+            onChange={(value)=>setContent(value)}
+            onSubmit={(content, files)=>{
+              if (!content) {
+                return;	
+              }
+              onSubmit(content, files)
+              setContent('')
+            }}
+            isRequesting={isRequesting}
             className="shadow-2xl bg-white w-full mt-3"
+            difyApi={difyApi}
           />
         </div>
       </div>
