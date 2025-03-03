@@ -101,8 +101,10 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
   const [nextSuggestions, setNextSuggestions] = useState<string[]>([]);
 	// 定义 ref, 用于获取最新的 conversationId
 	const conversationIdRef = useRef<string>();
+  const difyApiRef = useRef<DifyApi>(difyApi);
   useEffect(() => {
     conversationIdRef.current = conversationId; // 实时更新 ref
+    difyApiRef.current = difyApi; // 实时更新 ref
   }, [conversationId]);
 
   /**
@@ -117,7 +119,7 @@ export default function ChatboxWrapper(props: IChatboxWrapperProps) {
     request: async ({ message }, { onSuccess, onUpdate }) => {
 
       // 发送消息
-      const response = await difyApi.sendMessage({
+      const response = await difyApiRef.current.sendMessage({
         inputs: {
           target,
         },
