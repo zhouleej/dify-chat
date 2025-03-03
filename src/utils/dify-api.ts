@@ -86,7 +86,7 @@ export class DifyApi {
     this.options = options;
 		const runtimeVars = getVars()
 		this.baseRequest = new XRequest({
-			baseURL: `${runtimeVars.DIFY_API_BASE || ''}${runtimeVars.DIFY_API_VERSION}`,
+			baseURL: process.env.NODE_ENV === 'development' ? runtimeVars.DIFY_API_VERSION : `${runtimeVars.DIFY_API_BASE || ''}${runtimeVars.DIFY_API_VERSION}`,
 			apiKey: runtimeVars.DIFY_API_KEY
 		})
   }
