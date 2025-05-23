@@ -1,6 +1,3 @@
-import { GithubOutlined } from '@ant-design/icons'
-import { Button } from 'antd'
-
 import LogoImage from '@/assets/images/logo.png'
 
 export const LogoIcon = () => {
@@ -11,19 +8,6 @@ export const LogoIcon = () => {
 			draggable={false}
 			alt="logo"
 		/>
-	)
-}
-
-export const GithubIcon = () => {
-	return (
-		<Button
-			type="link"
-			href="https://github.com/lexmin0412/dify-chat"
-			target="_blank"
-			className="px-0"
-		>
-			<GithubOutlined className="text-xl cursor-pointer text-theme-text" />
-		</Button>
 	)
 }
 
@@ -39,7 +23,7 @@ interface ILogoProps {
 }
 
 export const Logo = (props: ILogoProps) => {
-	const { hideGithubIcon, hideText } = props
+	const { hideText } = props
 
 	return (
 		<div className="flex h-16 items-center justify-start !py-0 box-border">
@@ -56,16 +40,6 @@ export const Logo = (props: ILogoProps) => {
 					</span>
 				) : null}
 			</div>
-			{!hideGithubIcon && (
-				<Button
-					type="link"
-					href="https://github.com/lexmin0412/dify-chat"
-					target="_blank"
-					className="px-0"
-				>
-					<GithubOutlined className="text-lg cursor-pointer text-theme-text" />
-				</Button>
-			)}
 		</div>
 	)
 }
