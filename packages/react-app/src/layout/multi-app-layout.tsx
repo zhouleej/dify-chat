@@ -1,32 +1,31 @@
 import { DownCircleTwoTone } from '@ant-design/icons'
 import { createDifyApiInstance, DifyApi } from '@dify-chat/api'
 import { LucideIcon } from '@dify-chat/components'
-import {
-	AppContextProvider,
-	ICurrentApp,
-	IDifyAppItem,
-	IDifyChatContextMultiApp,
-} from '@dify-chat/core'
-import { useDifyChat } from '@dify-chat/core'
+import { AppContextProvider, DifyAppStore, ICurrentApp, IDifyAppItem } from '@dify-chat/core'
 import { useIsMobile } from '@dify-chat/helpers'
 import { useMount, useRequest } from 'ahooks'
 import { Dropdown, message } from 'antd'
 import { useHistory, useParams } from 'pure-react-router'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 
+import { useAuth } from '@/hooks/use-auth'
 import { useAppSiteSetting } from '@/hooks/useApi'
 
 import MainLayout from './main-layout'
 
-const MultiAppLayout: React.FC = () => {
-	const { ...difyChatContext } = useDifyChat()
-	const { user, appService } = difyChatContext as IDifyChatContextMultiApp
+interface IMultiAppLayoutProps {
+	listApi: DifyAppStore['getApps']
+}
+
+const MultiAppLayout = (props: IMultiAppLayoutProps) => {
+	const { listApi } = props
 	const history = useHistory()
+	const { userId } = useAuth()
 
 	const [difyApi] = useState(
 		createDifyApiInstance({
-			user,
+			user: userId,
 			apiBase: '',
 			apiKey: '',
 		}),
@@ -42,7 +41,7 @@ const MultiAppLayout: React.FC = () => {
 	const { runAsync: getAppList } = useRequest(
 		() => {
 			setInitLoading(true)
-			return appService.getApps()
+			return listApi()
 		},
 		{
 			manual: true,
@@ -87,12 +86,11 @@ const MultiAppLayout: React.FC = () => {
 	 */
 	const initApp = async () => {
 		const appItem = appList?.find(item => item.id === selectedAppId)
-		console.log('appItem', appItem)
 		if (!appItem) {
 			return
 		}
 		difyApi.updateOptions({
-			user,
+			user: userId,
 			...appItem.requestConfig,
 		})
 		setInitLoading(true)
@@ -103,7 +101,6 @@ const MultiAppLayout: React.FC = () => {
 		Promise.all(promises)
 			.then(res => {
 				const [parameters, siteSetting] = res
-				console.log('更新一下', appItem)
 				setCurrentApp({
 					config: appItem,
 					parameters: parameters!,

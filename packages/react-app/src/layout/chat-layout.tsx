@@ -7,6 +7,7 @@ import {
 } from '@ant-design/icons'
 import { DifyApi, IConversationItem } from '@dify-chat/api'
 import { AppIcon, AppInfo, ConversationList, LucideIcon } from '@dify-chat/components'
+import { HeaderLayout } from '@dify-chat/components'
 import { ConversationsContextProvider, IDifyAppItem, useAppContext } from '@dify-chat/core'
 import { isTempId, useIsMobile } from '@dify-chat/helpers'
 import { ThemeModeEnum, ThemeModeLabelEnum, useThemeContext } from '@dify-chat/theme'
@@ -31,8 +32,6 @@ import React, { useEffect, useMemo, useState } from 'react'
 import ChatboxWrapper from '@/components/chatbox-wrapper'
 import { DEFAULT_CONVERSATION_NAME } from '@/constants'
 import { useLatest } from '@/hooks/use-latest'
-
-import HeaderLayout from './header'
 
 interface IChatLayoutProps {
 	/**
@@ -410,7 +409,9 @@ export default function ChatLayout(props: IChatLayoutProps) {
 											</Button>
 										) : null}
 										{/* 🌟 对话管理 */}
-										<div className="px-4 mt-3 flex-1">{conversationListWithEmpty}</div>
+										<div className="px-4 mt-3 flex-1 overflow-auto">
+											{conversationListWithEmpty}
+										</div>
 									</>
 								) : (
 									<div className="flex flex-col justify-start items-center flex-1 pt-6">
@@ -459,7 +460,7 @@ export default function ChatLayout(props: IChatLayoutProps) {
 									</div>
 								)}
 
-								<div className="border-0 border-t border-solid border-theme-border flex items-center justify-center h-12">
+								<div className="border-0 border-t border-solid border-theme-splitter flex items-center justify-center h-12">
 									<Tooltip
 										title={sidebarOpen ? '折叠侧边栏' : '展开侧边栏'}
 										placement="right"

@@ -27,29 +27,36 @@ interface IWelcomePlaceholderProps {
 	 * 是否展示提示项
 	 */
 	showPrompts: boolean;
+	showPrompts: boolean;
 	/**
 	 * 点击提示项时触发的回调函数
 	 */
+	onPromptItemClick: GetProp<typeof Prompts, "onItemClick">;
 	onPromptItemClick: GetProp<typeof Prompts, "onItemClick">;
 	/**
 	 * 表单是否填写
 	 */
 	formFilled: boolean;
+	formFilled: boolean;
 	/**
 	 * 表单填写状态改变回调
 	 */
+	onStartConversation: (formValues: Record<string, unknown>) => void;
 	onStartConversation: (formValues: Record<string, unknown>) => void;
 	/**
 	 * 当前对话 ID
 	 */
 	conversationId?: string;
+	conversationId?: string;
 	/**
 	 * 应用入参的表单实例
 	 */
 	entryForm: FormInstance<Record<string, unknown>>;
+	entryForm: FormInstance<Record<string, unknown>>;
 	/**
 	 * 上传文件 API
 	 */
+	uploadFileApi: DifyApi["uploadFile"];
 	uploadFileApi: DifyApi["uploadFile"];
 }
 
@@ -57,6 +64,9 @@ interface IWelcomePlaceholderProps {
  * 对话内容区的欢迎占位符
  */
 export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
+	const { onPromptItemClick, showPrompts, uploadFileApi } = props;
+	const isMobile = useIsMobile();
+	const { currentApp } = useAppContext();
 	const { onPromptItemClick, showPrompts, uploadFileApi } = props;
 	const isMobile = useIsMobile();
 	const { currentApp } = useAppContext();
@@ -98,6 +108,10 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 				size={12}
 				direction="vertical"
 				className={classNames({
+					"w-full md:!w-3/4": true,
+					"pb-6":
+						!showPrompts && currentApp?.parameters.user_input_form?.length,
+					"pt-3": showPrompts,
 					"w-full md:!w-3/4": true,
 					"pb-6":
 						!showPrompts && currentApp?.parameters.user_input_form?.length,
@@ -144,29 +158,39 @@ export const WelcomePlaceholder = (props: IWelcomePlaceholderProps) => {
 						styles={{
 							list: {
 								width: "100%",
+								width: "100%",
 							},
 							item: isMobile
 								? {
+										width: "100%",
+										color: "var(--theme-text-color)",
 										width: "100%",
 										color: "var(--theme-text-color)",
 									}
 								: {
 										flex: 1,
 										color: "var(--theme-text-color)",
+										color: "var(--theme-text-color)",
 									},
 						}}
 						onItemClick={async (...params) => {
 							validateAndGenErrMsgs(props.entryForm).then((res) => {
+							validateAndGenErrMsgs(props.entryForm).then((res) => {
 								if (res.isSuccess) {
+									onPromptItemClick(...params);
 									onPromptItemClick(...params);
 								} else {
 									message.error(res.errMsgs);
+									message.error(res.errMsgs);
 								}
+							});
 							});
 						}}
 					/>
 				) : null}
 			</Space>
 		</div>
+	);
+};
 	);
 };

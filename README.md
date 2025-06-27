@@ -6,27 +6,33 @@
 
 如果你觉得这个项目还不错的话，请动动你的小手指点个 Star ⭐️ 吧～
 
+> ⚠️ 当前处于 v0.4.0 的早期开发阶段，发布目标为新增 Next.js 的 MVP 版本，对应现有的 react-app 和其他子包也会完成 react 升级和大规模的代码重构，在 v0.4.0 发布之前，main 分支将处于不稳定状态，部分功能可能无法使用，如需稳定使用请拉取 v0.3.0。
+
 | 加群沟通（提需求/ bug 请带 issue 发言）                                                                                                              | 喂我花生（请在留言中备注自己的 Github 用户名哦）                                                                                                |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| <img src="https://github.com/user-attachments/assets/e2ad49bd-9dc9-44a8-96ee-cca7c9e6183c" alt="wechat-group" style="width: 400px; height: 400px" /> | <img src="https://github.com/user-attachments/assets/f56d53b7-8529-4a1d-a0ce-27bfe60510ec" alt="sponsor" style="width: 400px; height: 400px" /> |
+| <img src="https://github.com/user-attachments/assets/ef4097d0-11ea-4105-997a-c52994bb8467" alt="wechat-group" style="width: 400px; height: 400px" /> | <img src="https://github.com/user-attachments/assets/f56d53b7-8529-4a1d-a0ce-27bfe60510ec" alt="sponsor" style="width: 400px; height: 400px" /> |
 
-## 🥇 Golden Sponsors
+## 🥇 Sponsors
 
 > 注：每日手动更新
 
-| Avatar                                                                                                                          | Name                                                                          | Type   |
-| ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------ |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/74965055?v=4" />                            | <a target="blank" href="https://github.com/forgoodthing">forgoodthing</a>     | Github |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/18590361?v=4" />                            | <a target="blank" href="https://github.com/unmurphy">unmurphy</a>             | Github |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/1463755?v=4" />                             | <a target="blank" href="https://github.com/wallowbear">打豆豆</a>             | Github |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/9300916?v=4" />                             | <a target="blank" href="https://github.com/tangzp">tangzp</a>                 | Github |
-| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/2a8f706b-4c41-461c-a29c-89e354b02d33" /> | -1                                                                            | Wechat |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/48902884?v=4" />                            | <a target="blank" href="https://github.com/HowieSh">HowieSh</a>               | Github |
-| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/77f6390a-dfb8-4660-b43d-6965477cab9b" /> | 北鱼                                                                          | Wechat |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/49941899?v=4" />                            | <a target="blank" href="https://github.com/weihaoaho">weihaoaho</a>           | Github |
-| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/42f840cd-ce40-4193-89b7-77bd578fed5b" /> | xintan                                                                        | Wechat |
-| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/13366372?v=4" />                            | <a target="blank" href="https://github.com/zhaoweihan2015">zhaoweihan2015</a> | Github |
-| None                                                                                                                            | 匿名慈善家                                                                    | Wechat |
+| Avatar                                                                                                                          | Name                                                                            | Type   |
+| ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------ |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/bc1384b1-1920-44e9-91a5-571fffb496d6" /> | FENGYRAN                                                                        | Wechat |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/7828931?v=4" />                             | <a target="blank" href="https://github.com/xieqinzhangjian">xieqinzhangjian</a> | Github |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/ce9ee0e1-d3ff-469d-a52d-16f00890dd25" /> | 果冻                                                                            | Wechat |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/df21bfee-a552-49ca-9a58-20311c87560d" /> | VincentX                                                                        | Wechat |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/13366372?v=4" />                            | <a target="blank" href="https://github.com/zhaoweihan2015">zhaoweihan2015</a>   | Github |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/42f840cd-ce40-4193-89b7-77bd578fed5b" /> | xintan                                                                          | Wechat |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/49941899?v=4" />                            | <a target="blank" href="https://github.com/weihaoaho">weihaoaho</a>             | Github |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/77f6390a-dfb8-4660-b43d-6965477cab9b" /> | 北鱼                                                                            | Wechat |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/18590361?v=4" />                            | <a target="blank" href="https://github.com/unmurphy">unmurphy</a>               | Github |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/48902884?v=4" />                            | <a target="blank" href="https://github.com/HowieSh">HowieSh</a>                 | Github |
+| <img style="width: 50px; height: 50px" src="https://github.com/user-attachments/assets/2a8f706b-4c41-461c-a29c-89e354b02d33" /> | -1                                                                              | Wechat |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/9300916?v=4" />                             | <a target="blank" href="https://github.com/tangzp">tangzp</a>                   | Github |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/1463755?v=4" />                             | <a target="blank" href="https://github.com/wallowbear">打豆豆</a>               | Github |
+| <img style="width: 50px; height: 50px" src="https://avatars.githubusercontent.com/u/74965055?v=4" />                            | <a target="blank" href="https://github.com/forgoodthing">forgoodthing</a>       | Github |
+| None                                                                                                                            | 匿名慈善家                                                                      | Wechat |
 
 ## Repobeats
 
@@ -402,24 +408,44 @@ export default function App() {
 
 ![应用切换按钮](./docs/guide_mtapp_setting_hidden.png)
 
-### 3. 跨域处理
+### 3. 自定义 `sys.user_id`
 
-Dify Cloud 以及私有化部署的 Dify 服务本身均支持跨域请求，无需额外处理，但如果你的私有化部署环境还存在额外的网关层，且对跨域资源访问有严格的限制，可能就会导致跨域问题，处理方式如下：
+在 Dify 应用中，存在一个名为 `sys.user_id` 的变量，用于标识当前用户的 ID。
 
-在你的网关层的响应 Header 处理中，增加 `Access-Control-Allow-Origin` 字段，允许 Dify-Chat 应用的部署域名访问，以 nginx 为例：
+![user_id](./docs/guide_chatflow_param_userid.jpg)
 
-```bash
-# nginx.conf
-server {
-  listen 443;
-  server_name dify-chat.com # 这里换成你的前端部署域名
+在本项目中，默认使用了 `FingerPrintJS` 来生成浏览器唯一的用户 ID，你可以在 `src/App.tsx` 中看到它的具体实现：
 
-  location / {
-    add_header Access-Control-Allow-Origin https://dify-chat.com; # 这里换成你的前端部署协议+域名
-    add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, OPTIONS';
-  }
+```tsx
+import FingerPrintJS from "@fingerprintjs/fingerprintjs";
+
+export default function App() {
+  const [userId, setUserId] = useState<string>("");
+
+  useMount(() => {
+    // 模拟登录过程获取用户唯一标识
+    const loadFP = async () => {
+      const fp = await FingerPrintJS.load();
+      const result = await fp.get();
+      setUserId(result.visitorId);
+    };
+    loadFP();
+  });
+
+  return (
+    <DifyChatProvider
+      value={{
+        // 用户id，可以获取业务系统的用户 ID，动态传入
+        user: USER,
+      }}
+    >
+      子组件
+    </DifyChatProvider>
+  );
 }
 ```
+
+当然，如果你的业务系统中已经有了用户 ID，你可以自行修改 `DifyChatProvider` 的 `user` 属性赋值逻辑。
 
 ### 4. 支持表单
 
@@ -643,6 +669,25 @@ export default function App() {
 在界面上编辑应用配置，将 "对话配置" 中的 "开场白展示场景" 设为 "总是展示" 即可。
 
 ![alt text](./docs/guide_app_config_opening_statement_display_always.png)
+
+### 7. 跨域处理
+
+Dify Cloud 以及私有化部署的 Dify 服务本身均支持跨域请求，无需额外处理，但如果你的私有化部署环境还存在额外的网关层，且对跨域资源访问有严格的限制，可能就会导致跨域问题，处理方式如下：
+
+在你的网关层的响应 Header 处理中，增加 `Access-Control-Allow-Origin` 字段，允许 Dify-Chat 应用的部署域名访问，以 nginx 为例：
+
+```bash
+# nginx.conf
+server {
+  listen 443;
+  server_name dify-chat.com # 这里换成你的前端部署域名
+
+  location / {
+    add_header Access-Control-Allow-Origin https://dify-chat.com; # 这里换成你的前端部署协议+域名
+    add_header Access-Control-Allow-Methods 'GET, POST, PUT, DELETE, OPTIONS';
+  }
+}
+```
 
 ## 本地开发
 
