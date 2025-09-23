@@ -1,12 +1,13 @@
-import { LucideIcon } from '@/components'
 import { useIsMobile } from '@dify-chat/helpers'
 import { ThemeSelector, useThemeContext } from '@dify-chat/theme'
 import { Space } from 'antd'
 import classNames from 'classnames'
 import React from 'react'
 
+import { LucideIcon } from '@/components'
+
 import CenterTitleWrapper from './center-title-wrapper'
-import { GithubIcon, Logo } from './logo'
+import { Logo } from './logo'
 
 export interface IHeaderLayoutProps {
 	/**
@@ -88,7 +89,6 @@ export default function HeaderLayout(props: IHeaderLayoutProps) {
 								/>
 							</div>
 						</ThemeSelector>
-						<GithubIcon />
 					</Space>
 				)}
 			</HeaderSiderIcon>
