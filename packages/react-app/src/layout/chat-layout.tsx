@@ -97,14 +97,29 @@ export default function ChatLayout(props: IChatLayoutProps) {
 		}
 		try {
 			const result = await difyApi?.listConversations()
-			const newItems =
+			// 将 Dify API 返回的英文默认会话名称替换为中文
+			const conversationsWithLocalizedName =
 				result?.data?.map(item => {
+					// 如果会话名称是常见的英文默认名称，则替换为中文
+					const isDefaultEnglishName = [
+						'New conversation',
+						'New Conversation',
+						'New Chat',
+						'New chat',
+					].includes(item.name)
+					return {
+						...item,
+						name: isDefaultEnglishName ? DEFAULT_CONVERSATION_NAME : item.name,
+					}
+				}) || []
+			const newItems =
+				conversationsWithLocalizedName?.map(item => {
 					return {
 						key: item.id,
 						label: item.name,
 					}
 				}) || []
-			setConversations(result?.data)
+			setConversations(conversationsWithLocalizedName)
 			// 避免闭包问题
 			if (!latestCurrentConversationId.current) {
 				if (newItems.length) {
