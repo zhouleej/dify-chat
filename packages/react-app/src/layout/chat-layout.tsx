@@ -97,7 +97,7 @@ export default function ChatLayout(props: IChatLayoutProps) {
 		}
 		try {
 			const result = await difyApi?.listConversations()
-			// 将 Dify API 返回的英文默认会话名称替换为中文
+			// 将 Dify API 返回的英文默认会话名称替换为中文（用于兼容旧会话）
 			const conversationsWithLocalizedName =
 				result?.data?.map(item => {
 					// 如果会话名称是常见的英文默认名称，则替换为中文

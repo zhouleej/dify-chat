@@ -14,10 +14,32 @@ import { message as antdMessage, FormInstance } from 'antd'
 import { useState } from 'react'
 
 import { RESPONSE_MODE } from '@/config'
+import { DEFAULT_CONVERSATION_NAME, MAX_CONVERSATION_NAME_LENGTH } from '@/constants'
 import { IAgentMessage, IMessageFileItem } from '@/types'
 
 import { useAuth } from '../use-auth'
 import workflowDataStorage from './workflow-data-storage'
+
+/**
+ * 根据用户输入生成会话名称
+ * @param query 用户输入的问题
+ * @returns 生成的会话名称（超出长度则省略）
+ */
+const generateConversationName = (query: string): string => {
+	if (!query || query.trim().length === 0) {
+		return DEFAULT_CONVERSATION_NAME
+	}
+
+	const trimmedQuery = query.trim()
+
+	// 如果长度未超出限制，直接返回
+	if (trimmedQuery.length <= MAX_CONVERSATION_NAME_LENGTH) {
+		return trimmedQuery
+	}
+
+	// 超出长度则截取并添加省略号
+	return trimmedQuery.substring(0, MAX_CONVERSATION_NAME_LENGTH) + '...'
+}
 
 export const useX = (options: {
 	difyApi: DifyApi
@@ -49,6 +71,7 @@ export const useX = (options: {
 	const [agent] = useXAgent<IAgentMessage>({
 		request: async ({ message }, { onSuccess, onUpdate, onError }) => {
 			const inputs = message?.inputs || entryForm.getFieldsValue() || {}
+			const userQuery = message?.content as string
 			// 发送消息
 			const response = await difyApi.sendMessage({
 				inputs,
@@ -58,7 +81,7 @@ export const useX = (options: {
 				files: filesRef.current || [],
 				user,
 				response_mode: RESPONSE_MODE,
-				query: message?.content as string,
+				query: userQuery,
 			})
 
 			let result = ''
@@ -100,6 +123,8 @@ export const useX = (options: {
 			// 记录对话和消息 ID
 			let conversationId = latestProps.current.conversationId || ''
 			let messageId = ''
+			// 标记是否是从临时会话转换为真实会话
+			const isNewConversation = isTempId(latestProps.current.conversationId)
 			while (reader) {
 				const { value: chunk, done } = await reader.read()
 				if (done) {
@@ -119,6 +144,18 @@ export const useX = (options: {
 						workflows,
 						agentThoughts,
 					})
+					// 如果是新创建的会话，则根据用户第一次提问自动生成会话名称
+					if (isNewConversation && conversationId) {
+						try {
+							const conversationName = generateConversationName(userQuery)
+							await difyApi.renameConversation({
+								conversation_id: conversationId,
+								name: conversationName,
+							})
+						} catch (error) {
+							console.error('自动重命名会话失败', error)
+						}
+					}
 					getConversationMessages(conversationId)
 					onConversationIdChange(conversationId)
 					break
