@@ -60,7 +60,6 @@ export default function HeaderLayout(props: IHeaderLayoutProps) {
 					text={logoText}
 					renderLogo={renderLogo}
 					hideText={isMobile}
-					hideGithubIcon
 				/>
 			</HeaderSiderIcon>
 
