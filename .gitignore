@@ -25,3 +25,6 @@ dist/
 
 packages/server/apps.json
 .dify-chat
+
+# Prisma generated
+packages/platform/prisma/generated/
