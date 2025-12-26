@@ -1,3 +1,5 @@
+'use client'
+
 import { HeaderLayout, IHeaderLayoutProps } from '@dify-chat/components'
 
 interface IPageLayoutProps {

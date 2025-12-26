@@ -55,6 +55,7 @@ export const AppEditDrawer = (props: IAppEditDrawerProps) => {
 				openingStatementDisplayMode:
 					appItem?.extConfig?.conversation?.openingStatement?.displayMode || 'default',
 				userId: appItem?.userId || undefined,
+				tenantId: appItem?.tenantId || undefined,
 			})
 		} else if (detailDrawerMode === AppDetailDrawerModeEnum.create) {
 			settingForm.setFieldsValue({
@@ -91,7 +92,7 @@ export const AppEditDrawer = (props: IAppEditDrawerProps) => {
 
 	return (
 		<Drawer
-			width={700}
+			size="large"
 			title={`${detailDrawerMode === AppDetailDrawerModeEnum.create ? '新增应用配置' : `编辑应用配置 - ${appItem?.info.name}`}`}
 			open={open}
 			onClose={onClose}
@@ -142,6 +143,7 @@ export const AppEditDrawer = (props: IAppEditDrawerProps) => {
 										},
 									},
 									userId: values['userId'] || undefined,
+									tenantId: values['tenantId'] || undefined,
 								}
 								if (detailDrawerMode === AppDetailDrawerModeEnum.edit) {
 									await updateApp({

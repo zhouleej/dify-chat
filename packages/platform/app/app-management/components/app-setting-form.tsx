@@ -4,7 +4,7 @@ import { Form, FormInstance, Input, Select } from 'antd'
 
 import { IDifyAppItem } from '@/types'
 
-import { listUsers } from '../actions'
+import { listTenants, listUsers } from '../actions'
 import { AppDetailDrawerModeEnum } from '../enums'
 
 interface ISettingFormProps {
@@ -20,6 +20,8 @@ export default function SettingForm(props: ISettingFormProps) {
 
 	// 获取用户列表
 	const { data: users = [] } = useRequest(listUsers)
+	// 获取租户列表
+	const { data: tenants = [] } = useRequest(listTenants)
 
 	return (
 		<Form
@@ -89,8 +91,6 @@ export default function SettingForm(props: ISettingFormProps) {
 				rules={[{ required: true, message: '应用类型不能为空' }]}
 			>
 				<Select
-					// TODO 等 Dify 支持返回 mode 字段后，这里可以做一个判断，大于支持返回 mode 的版本就禁用，直接取接口值
-					// disabled
 					placeholder="请选择应用类型"
 					options={AppModeOptions}
 				/>
@@ -126,24 +126,37 @@ export default function SettingForm(props: ISettingFormProps) {
 				<Select
 					placeholder="请选择应用状态"
 					options={[
-						{
-							label: '启用',
-							value: 1,
-						},
-						{
-							label: '禁用',
-							value: 2,
-						},
+						{ label: '启用', value: 1 },
+						{ label: '禁用', value: 2 },
 					]}
+				/>
+			</Form.Item>
+
+			<div className="text-base mb-3 flex items-center">
+				<div className="h-4 w-1 bg-primary rounded"></div>
+				<div className="ml-2 font-semibold">归属配置</div>
+			</div>
+			<Form.Item
+				name="tenantId"
+				label="所属租户"
+				tooltip="选择该应用所属的租户，租户用户可通过专属链接访问（无需登录）"
+			>
+				<Select
+					placeholder="请选择所属租户（不选则不属于任何租户）"
+					allowClear
+					options={tenants.map(tenant => ({
+						label: `${tenant.name} (${tenant.code})`,
+						value: tenant.id,
+					}))}
 				/>
 			</Form.Item>
 			<Form.Item
 				name="userId"
 				label="所属用户"
-				tooltip="选择该应用所属的用户，只有该用户才能在前端看到此应用"
+				tooltip="选择该应用所属的用户，只有该用户登录后才能看到此应用"
 			>
 				<Select
-					placeholder="请选择所属用户（不选则所有用户可见）"
+					placeholder="请选择所属用户（不选则不属于任何用户）"
 					allowClear
 					options={users.map(user => ({
 						label: `${user.name || user.email} (${user.email})`,
@@ -167,14 +180,8 @@ export default function SettingForm(props: ISettingFormProps) {
 				<Select
 					placeholder="请选择"
 					options={[
-						{
-							label: '启用',
-							value: true,
-						},
-						{
-							label: '禁用',
-							value: false,
-						},
+						{ label: '启用', value: true },
+						{ label: '禁用', value: false },
 					]}
 				/>
 			</Form.Item>
@@ -207,14 +214,8 @@ export default function SettingForm(props: ISettingFormProps) {
 				<Select
 					placeholder="请选择"
 					options={[
-						{
-							label: '启用',
-							value: true,
-						},
-						{
-							label: '禁用',
-							value: false,
-						},
+						{ label: '启用', value: true },
+						{ label: '禁用', value: false },
 					]}
 				/>
 			</Form.Item>

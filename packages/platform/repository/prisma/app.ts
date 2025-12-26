@@ -42,6 +42,54 @@ export const getAppListByUserId = async (userId: string): Promise<IDifyAppItem[]
 }
 
 /**
+ * 根据租户Code获取应用列表
+ */
+export const getAppListByTenantCode = async (tenantCode: string): Promise<IDifyAppItem[]> => {
+	try {
+		// 先根据 code 查找租户
+		const tenant = await prisma.tenant.findUnique({
+			where: { code: tenantCode },
+		})
+		if (!tenant) {
+			return []
+		}
+		const dbApps = await prisma.difyApp.findMany({
+			where: {
+				tenantId: tenant.id,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		})
+		return dbApps.map(dbAppToAppItem)
+	} catch (error) {
+		console.error('Error fetching app list by tenant:', error)
+		throw new Error('Failed to fetch app list')
+	}
+}
+
+/**
+ * 获取公共应用列表（没有 userId 和 tenantId 的应用）
+ */
+export const getPublicAppList = async (): Promise<IDifyAppItem[]> => {
+	try {
+		const dbApps = await prisma.difyApp.findMany({
+			where: {
+				userId: null,
+				tenantId: null,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		})
+		return dbApps.map(dbAppToAppItem)
+	} catch (error) {
+		console.error('Error fetching public app list:', error)
+		throw new Error('Failed to fetch app list')
+	}
+}
+
+/**
  * 根据 ID 获取应用详情
  */
 export const getAppItem = async (id: string): Promise<IDifyAppItem | null> => {

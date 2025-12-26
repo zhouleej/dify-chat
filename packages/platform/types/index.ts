@@ -120,4 +120,19 @@ export interface IDifyAppItem extends IDifyAppItem4View {
 	 * 所属用户ID
 	 */
 	userId?: string
+	/**
+	 * 所属租户ID
+	 */
+	tenantId?: string
+}
+
+/**
+ * 租户配置
+ */
+export interface ITenant {
+	id: string
+	code: string
+	name: string
+	description?: string
+	isEnabled: 1 | 2
 }

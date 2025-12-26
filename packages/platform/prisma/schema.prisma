@@ -10,6 +10,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// 租户表 - 用于多租户隔离
+model Tenant {
+  id          String   @id @default(cuid())
+  code        String   @unique // 租户唯一编码，用于 URL 路径
+  name        String   // 租户名称
+  description String?  // 租户描述
+  isEnabled   Int      @default(1) @map("is_enabled") // 1-启用，2-禁用
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  // 租户拥有的应用
+  apps  DifyApp[]
+  // 租户下的用户
+  users User[]
+
+  @@map("tenants")
+}
+
 model DifyApp {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now()) @map("created_at")
@@ -42,6 +60,10 @@ model DifyApp {
   userId String? @map("user_id")
   user   User?   @relation(fields: [userId], references: [id])
 
+  // 租户关联
+  tenantId String? @map("tenant_id")
+  tenant   Tenant? @relation(fields: [tenantId], references: [id])
+
   @@map("dify_apps")
 }
 
@@ -57,6 +79,10 @@ model User {
 
   // 用户拥有的应用
   apps DifyApp[]
+
+  // 用户所属租户（可选）
+  tenantId String? @map("tenant_id")
+  tenant   Tenant? @relation(fields: [tenantId], references: [id])
 
   @@map("users")
 }

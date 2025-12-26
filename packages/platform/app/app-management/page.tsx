@@ -58,6 +58,7 @@ export default function AppManagementPage() {
 					dataSource={list}
 					loading={listLoading}
 					scroll={{ x: 1200 }}
+					rowKey="id"
 					columns={[
 						{
 							title: '名称',

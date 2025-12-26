@@ -8,6 +8,7 @@ import {
 	getAppList as getAppListFromRepository,
 	updateApp as updateAppItem,
 } from '@/repository/app'
+import { getTenantList } from '@/repository/tenant'
 import { IDifyAppItem } from '@/types'
 
 import { maskApiKey4AppConfig } from './utils'
@@ -79,4 +80,11 @@ export async function listUsers() {
 		},
 	})
 	return users
+}
+
+/**
+ * 获取租户列表（用于应用分配）
+ */
+export async function listTenants() {
+	return getTenantList()
 }

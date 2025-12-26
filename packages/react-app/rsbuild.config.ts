@@ -1,9 +1,12 @@
-import { defineConfig } from '@rsbuild/core'
+import { defineConfig, loadEnv } from '@rsbuild/core'
 import { pluginLess } from '@rsbuild/plugin-less'
 import { pluginReact } from '@rsbuild/plugin-react'
 import { pluginSourceBuild } from '@rsbuild/plugin-source-build'
 import path from 'path'
 import tailwindcss from 'tailwindcss'
+
+// 加载 .env 文件
+const { publicVars } = loadEnv({ prefixes: ['PUBLIC_'] })
 
 const tsconfigDevPath = path.resolve(__dirname, './tsconfig.json')
 const tsconfigProdPath = path.resolve(__dirname, './tsconfig.prod.json')
@@ -14,6 +17,7 @@ export default defineConfig({
 		include: [{ not: /[\\/]core-js[\\/]/ }],
 		// 把 .env 中的变量注入到 process.env，供前端代码读取
 		define: {
+			...publicVars,
 			'process.env.PUBLIC_DEBUG_MODE': JSON.stringify(process.env.PUBLIC_DEBUG_MODE ?? ''),
 			'process.env.PUBLIC_APP_API_BASE': JSON.stringify(process.env.PUBLIC_APP_API_BASE ?? ''),
 			'process.env.PUBLIC_DIFY_PROXY_API_BASE': JSON.stringify(

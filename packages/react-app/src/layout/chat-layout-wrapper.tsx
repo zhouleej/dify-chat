@@ -20,13 +20,24 @@ import { createDifyApiInstance, DifyApi } from '@/utils/dify-api'
 
 import MainLayout from './main-layout'
 
-const MultiAppLayout = () => {
+interface IMultiAppLayoutProps {
+	/**
+	 * 租户编码，租户模式下使用
+	 */
+	tenantCode?: string
+}
+
+const MultiAppLayout = (props: IMultiAppLayoutProps) => {
+	const { tenantCode } = props
 	const history = useHistory()
 	const { userId } = useAuth()
 
+	// 租户模式下使用租户编码作为用户标识
+	const effectiveUserId = tenantCode || userId
+
 	const [difyApi] = useState(
 		createDifyApiInstance({
-			user: userId,
+			user: effectiveUserId,
 			apiBase: '',
 			apiKey: '',
 		}),
@@ -42,7 +53,7 @@ const MultiAppLayout = () => {
 	const { runAsync: getAppList } = useRequest(
 		() => {
 			setInitLoading(true)
-			return appService.getApps()
+			return appService.getApps(tenantCode)
 		},
 		{
 			manual: true,
@@ -53,7 +64,11 @@ const MultiAppLayout = () => {
 				if (isMobile) {
 					// 移动端如果没有应用，直接跳转应用列表页
 					if (!result?.length) {
-						history.replace('/apps')
+						if (tenantCode) {
+							history.replace(`/t/${tenantCode}/apps`)
+						} else {
+							history.replace('/apps')
+						}
 						return Promise.resolve([])
 					}
 				}
@@ -107,17 +122,17 @@ const MultiAppLayout = () => {
 	 * 初始化应用信息
 	 */
 	const initApp = async () => {
-		const appItem = await appService.getAppByID(selectedAppId)
+		const appItem = await appService.getAppByID(selectedAppId, tenantCode)
 		if (!appItem) {
 			return
 		}
 		const newOptions = isDebugMode()
 			? {
-					user: userId,
+					user: effectiveUserId,
 					...appItem.requestConfig,
 				}
 			: {
-					user: userId,
+					user: effectiveUserId,
 					...appItem.requestConfig,
 					apiBase: `/${selectedAppId}`,
 				}
@@ -157,6 +172,11 @@ const MultiAppLayout = () => {
 		getAppList()
 	})
 
+	// 获取应用列表页路径
+	const getAppsPath = () => (tenantCode ? `/t/${tenantCode}/apps` : '/apps')
+	// 获取应用详情页路径
+	const getAppPath = (id: string) => (tenantCode ? `/t/${tenantCode}/app/${id}` : `/app/${id}`)
+
 	return (
 		<AppContextProvider
 			value={{
@@ -182,7 +202,7 @@ const MultiAppLayout = () => {
 								<span
 									className="cursor-pointer inline-block shrink-0"
 									onClick={() => {
-										history.push('/apps')
+										history.push(getAppsPath())
 									}}
 								>
 									应用列表
@@ -207,7 +227,7 @@ const MultiAppLayout = () => {
 																</div>
 															),
 															onClick: () => {
-																history.push(`/app/${item.id}`)
+																history.push(getAppPath(item.id))
 																setSelectedAppId(item.id)
 															},
 															icon: (
@@ -234,7 +254,7 @@ const MultiAppLayout = () => {
 						)
 					}}
 				/>
-				<DebugMode />
+				{!tenantCode && <DebugMode />}
 			</>
 		</AppContextProvider>
 	)

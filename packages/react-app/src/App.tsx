@@ -9,6 +9,8 @@ import LayoutIndex from './layout'
 import AppListPage from './pages/apps'
 import AuthPage from './pages/auth'
 import ChatPage from './pages/chat'
+import TenantAppListPage from './pages/tenant-apps'
+import TenantChatPage from './pages/tenant-chat'
 
 // 初始化响应式配置
 initResponsiveConfig()
@@ -18,6 +20,9 @@ const routes: IRoute[] = [
 	{ path: '/chat', component: () => <ChatPage /> },
 	{ path: '/app/:appId', component: () => <ChatPage /> },
 	{ path: '/apps', component: () => <AppListPage /> },
+	// 租户模式路由
+	{ path: '/t/:tenantCode/apps', component: () => <TenantAppListPage /> },
+	{ path: '/t/:tenantCode/app/:appId', component: () => <TenantChatPage /> },
 ]
 
 /**

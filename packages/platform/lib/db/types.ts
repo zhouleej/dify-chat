@@ -35,6 +35,7 @@ export function dbAppToAppItem(dbApp: DifyApp): IDifyAppItem {
 			},
 		},
 		userId: dbApp.userId || undefined,
+		tenantId: dbApp.tenantId || undefined,
 	}
 }
 
@@ -58,6 +59,7 @@ export function appItemToDbApp(
 		openingStatementDisplayMode:
 			appItem.extConfig?.conversation?.openingStatement?.displayMode || null,
 		userId: appItem.userId || null,
+		tenantId: appItem.tenantId || null,
 	}
 }
 
