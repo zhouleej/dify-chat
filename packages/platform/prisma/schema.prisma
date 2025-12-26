@@ -38,17 +38,25 @@ model DifyApp {
   // 扩展配置
   openingStatementDisplayMode String? @map("opening_statement_display_mode") // 'default' | 'always'
 
+  // 用户关联
+  userId String? @map("user_id")
+  user   User?   @relation(fields: [userId], references: [id])
+
   @@map("dify_apps")
 }
 
-// 用户表 - 仅用于后台管理员账户
+// 用户表 - 用于后台管理员和前端用户
 model User {
   id        String   @id @default(cuid())
   name      String?
   email     String   @unique
   password  String   // 密码哈希
+  role      String   @default("user") // admin | user
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+
+  // 用户拥有的应用
+  apps DifyApp[]
 
   @@map("users")
 }

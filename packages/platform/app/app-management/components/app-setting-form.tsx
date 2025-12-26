@@ -1,8 +1,10 @@
 import { AppModeOptions, OpeningStatementDisplayModeOptions } from '@dify-chat/core'
+import { useRequest } from 'ahooks'
 import { Form, FormInstance, Input, Select } from 'antd'
 
 import { IDifyAppItem } from '@/types'
 
+import { listUsers } from '../actions'
 import { AppDetailDrawerModeEnum } from '../enums'
 
 interface ISettingFormProps {
@@ -15,6 +17,9 @@ export default function SettingForm(props: ISettingFormProps) {
 	const { formInstance, mode, appItem } = props
 
 	const enableAnswerForm = Form.useWatch('enableAnswerForm', formInstance)
+
+	// 获取用户列表
+	const { data: users = [] } = useRequest(listUsers)
 
 	return (
 		<Form
@@ -130,6 +135,20 @@ export default function SettingForm(props: ISettingFormProps) {
 							value: 2,
 						},
 					]}
+				/>
+			</Form.Item>
+			<Form.Item
+				name="userId"
+				label="所属用户"
+				tooltip="选择该应用所属的用户，只有该用户才能在前端看到此应用"
+			>
+				<Select
+					placeholder="请选择所属用户（不选则所有用户可见）"
+					allowClear
+					options={users.map(user => ({
+						label: `${user.name || user.email} (${user.email})`,
+						value: user.id,
+					}))}
 				/>
 			</Form.Item>
 

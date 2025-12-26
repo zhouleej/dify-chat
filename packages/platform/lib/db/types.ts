@@ -34,6 +34,7 @@ export function dbAppToAppItem(dbApp: DifyApp): IDifyAppItem {
 				},
 			},
 		},
+		userId: dbApp.userId || undefined,
 	}
 }
 
@@ -56,6 +57,7 @@ export function appItemToDbApp(
 		enableUpdateInputAfterStarts: appItem.inputParams?.enableUpdateAfterCvstStarts || false,
 		openingStatementDisplayMode:
 			appItem.extConfig?.conversation?.openingStatement?.displayMode || null,
+		userId: appItem.userId || null,
 	}
 }
 

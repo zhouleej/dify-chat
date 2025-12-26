@@ -54,6 +54,7 @@ export const AppEditDrawer = (props: IAppEditDrawerProps) => {
 				enableUpdateInputAfterStarts: appItem?.inputParams?.enableUpdateAfterCvstStarts || false,
 				openingStatementDisplayMode:
 					appItem?.extConfig?.conversation?.openingStatement?.displayMode || 'default',
+				userId: appItem?.userId || undefined,
 			})
 		} else if (detailDrawerMode === AppDetailDrawerModeEnum.create) {
 			settingForm.setFieldsValue({
@@ -140,6 +141,7 @@ export const AppEditDrawer = (props: IAppEditDrawerProps) => {
 											},
 										},
 									},
+									userId: values['userId'] || undefined,
 								}
 								if (detailDrawerMode === AppDetailDrawerModeEnum.edit) {
 									await updateApp({

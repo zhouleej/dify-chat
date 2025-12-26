@@ -1,26 +1,8 @@
 import { IDifyAppItem } from '@dify-chat/core'
-import { BaseRequest } from '@dify-chat/helpers'
+import { BaseRequest, LocalStorageKeys, LocalStorageStore } from '@dify-chat/helpers'
 
 import { getDebugApps, isDebugMode } from '@/components/debug-mode'
-// 固定的应用列表
-// const appList = [
-// 	{
-// 		id: uniqueId(),
-// 		info: {
-// 			name: 'Chatflow Test App',
-// 			description: 'Chatflow 功能测试应用',
-// 			tags: ['测试', 'Chatflow'],
-// 		},
-// 		requestConfig: {
-// 			apiBase: 'https://api.dify.ai/v1',
-// 			apiKey: 'app-xxx',
-// 		},
-// 	} as IDifyAppItem,
-// ]
-
 import config from '@/config'
-
-// import { uniqueId } from 'lodash-es'
 
 // 支持多种存储方式
 interface IAppStorageAdapter {
@@ -35,11 +17,19 @@ interface IAppStorageAdapter {
 	getAppByID(id: string): Promise<IDifyAppItem>
 }
 
-const baseRequest = new BaseRequest({
-	baseURL: config.PUBLIC_APP_API_BASE as string,
-})
-
 class AppService implements IAppStorageAdapter {
+	private getHeaders() {
+		const userId = LocalStorageStore.get(LocalStorageKeys.USER_ID)
+		return userId ? { 'x-user-id': userId } : {}
+	}
+
+	private get baseRequest() {
+		return new BaseRequest({
+			baseURL: config.PUBLIC_APP_API_BASE as string,
+			headers: this.getHeaders(),
+		})
+	}
+
 	async getApps(): Promise<IDifyAppItem[]> {
 		// 检查是否开启调试模式
 		if (isDebugMode()) {
@@ -47,7 +37,7 @@ class AppService implements IAppStorageAdapter {
 			return debugApps
 		}
 
-		const result = await baseRequest.get('/apps')
+		const result = await this.baseRequest.get('/apps')
 		return Promise.resolve(result)
 	}
 

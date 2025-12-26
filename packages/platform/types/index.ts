@@ -116,4 +116,8 @@ export interface IDifyAppItem extends IDifyAppItem4View {
 			}
 		}
 	}
+	/**
+	 * 所属用户ID
+	 */
+	userId?: string
 }

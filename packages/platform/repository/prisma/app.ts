@@ -22,6 +22,26 @@ export const getAppList = async (): Promise<IDifyAppItem[]> => {
 }
 
 /**
+ * 根据用户ID获取应用列表
+ */
+export const getAppListByUserId = async (userId: string): Promise<IDifyAppItem[]> => {
+	try {
+		const dbApps = await prisma.difyApp.findMany({
+			where: {
+				userId: userId,
+			},
+			orderBy: {
+				createdAt: 'desc',
+			},
+		})
+		return dbApps.map(dbAppToAppItem)
+	} catch (error) {
+		console.error('Error fetching app list by user:', error)
+		throw new Error('Failed to fetch app list')
+	}
+}
+
+/**
  * 根据 ID 获取应用详情
  */
 export const getAppItem = async (id: string): Promise<IDifyAppItem | null> => {

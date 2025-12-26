@@ -12,6 +12,13 @@ export const getAppList = async (): Promise<IDifyAppItem[]> => {
 }
 
 /**
+ * 根据用户ID获取应用列表
+ */
+export const getAppListByUserId = async (userId: string): Promise<IDifyAppItem[]> => {
+	return prismaRepo.getAppListByUserId(userId)
+}
+
+/**
  * 根据 ID 获取应用详情
  */
 export const getAppItem = async (id: string): Promise<IDifyAppItem | null> => {

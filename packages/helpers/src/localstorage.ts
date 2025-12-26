@@ -5,6 +5,7 @@ const KEY_PREFIX = '__DC__'
 
 const LocalStorageKeyList = [
 	'USER_ID',
+	'USER_INFO',
 	'ENABLE_SETTING',
 	'THEME',
 	'THEME_MODE',
@@ -76,6 +77,16 @@ class LocalStorageStoreBuilder {
 		}
 		const storageKey = genLocalStorageKey(key)
 		localStorage.setItem(storageKey, value)
+	}
+
+	/**
+	 * 删除 localStorage 值
+	 * @param key 必须是 LocalStorageKeys 中的 key
+	 */
+	remove = (key: ILocalStorageKey) => {
+		this.validateKey(key)
+		const storageKey = genLocalStorageKey(key)
+		localStorage.removeItem(storageKey)
 	}
 }
 

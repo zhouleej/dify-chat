@@ -1,5 +1,6 @@
 'use server'
 
+import { prisma } from '@/lib/prisma'
 import {
 	addApp,
 	deleteApp as deleteAppItem,
@@ -60,4 +61,22 @@ export async function updateApp(appItem: IDifyAppItem) {
 			message: '更新应用配置失败',
 		}
 	}
+}
+
+/**
+ * 获取用户列表（用于应用分配）
+ */
+export async function listUsers() {
+	const users = await prisma.user.findMany({
+		select: {
+			id: true,
+			name: true,
+			email: true,
+			role: true,
+		},
+		orderBy: {
+			createdAt: 'desc',
+		},
+	})
+	return users
 }
