@@ -4,6 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "PORT=5300 next dev",
+		"dev:win": "next dev --port 5300",
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
