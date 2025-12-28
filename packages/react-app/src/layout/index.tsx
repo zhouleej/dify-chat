@@ -14,8 +14,11 @@ const RedirectWrapper = () => {
 	useEffect(() => {
 		const pathname = history.location.pathname
 
-		// 如果未登录，则跳转登录
-		if (!isAuthorized && pathname !== '/auth') {
+		// 租户模式路由无需登录校验
+		const isTenantRoute = pathname.startsWith('/t/')
+
+		// 如果未登录且不是租户模式路由，则跳转登录
+		if (!isAuthorized && pathname !== '/auth' && !isTenantRoute) {
 			goAuthorize()
 			return
 		}
