@@ -17,7 +17,6 @@ import { RESPONSE_MODE } from '@/config'
 import { DEFAULT_CONVERSATION_NAME, MAX_CONVERSATION_NAME_LENGTH } from '@/constants'
 import { IAgentMessage, IMessageFileItem } from '@/types'
 
-import { useAuth } from '../use-auth'
 import workflowDataStorage from './workflow-data-storage'
 
 /**
@@ -65,7 +64,9 @@ export const useX = (options: {
 		difyApi,
 	} = options
 	const { currentApp } = useAppContext()
-	const { userId: user } = useAuth()
+	// 使用 difyApi.options.user 作为用户标识，它已经在 chat-layout-wrapper 中正确设置
+	// 租户模式下是 tenantCode，用户模式下是 userId
+	const user = difyApi.options.user
 	const [currentTaskId, setCurrentTaskId] = useState('')
 
 	const [agent] = useXAgent<IAgentMessage>({

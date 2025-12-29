@@ -26,8 +26,17 @@ export async function POST(
 			return createDifyApiResponse({ error: 'App not found' }, 404)
 		}
 
-		// 获取用户ID
-		const userId = getUserIdFromRequest(request)
+		// 获取请求体中的 user
+		let bodyUser: string | undefined
+		try {
+			const body = await request.json()
+			bodyUser = body.user
+		} catch {
+			// 请求体可能为空
+		}
+
+		// 获取用户ID：优先使用请求体中的 user，否则从请求头获取
+		const userId = bodyUser || getUserIdFromRequest(request)
 
 		// 代理请求到 Dify API
 		const response = await proxyDifyRequest(

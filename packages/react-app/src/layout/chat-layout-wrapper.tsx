@@ -5,11 +5,11 @@ import {
 	ICurrentApp,
 	IDifyAppItem,
 } from '@dify-chat/core'
-import { useIsMobile } from '@dify-chat/helpers'
+import { getTenantUserId, useIsMobile } from '@dify-chat/helpers'
 import { useMount, useRequest } from 'ahooks'
 import { Dropdown, message } from 'antd'
 import { useHistory, useParams } from 'pure-react-router'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { flushSync } from 'react-dom'
 
 import { DebugMode, LucideIcon } from '@/components'
@@ -32,8 +32,14 @@ const MultiAppLayout = (props: IMultiAppLayoutProps) => {
 	const history = useHistory()
 	const { userId } = useAuth()
 
-	// 租户模式下使用租户编码作为用户标识
-	const effectiveUserId = tenantCode || userId
+	// 租户模式下使用 tenantCode + 匿名用户 ID 作为用户标识
+	// 这样同一租户下的不同用户有独立的会话
+	const effectiveUserId = useMemo(() => {
+		if (tenantCode) {
+			return getTenantUserId(tenantCode)
+		}
+		return userId
+	}, [tenantCode, userId])
 
 	const [difyApi] = useState(
 		createDifyApiInstance({

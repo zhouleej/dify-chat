@@ -26,10 +26,10 @@ export async function POST(
 
 		// 获取请求体
 		const body = await request.json()
-		const { message_id, text } = body
+		const { message_id, text, user } = body
 
-		// 获取用户ID
-		const userId = getUserIdFromRequest(request)
+		// 获取用户ID：优先使用请求体中的 user，否则从请求头获取
+		const userId = user || getUserIdFromRequest(request)
 
 		// 代理请求到 Dify API
 		const response = await fetch(`${app.requestConfig.apiBase}/text-to-audio`, {

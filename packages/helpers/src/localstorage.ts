@@ -11,6 +11,7 @@ const LocalStorageKeyList = [
 	'THEME_MODE',
 	'RUNNING_MODE',
 	'ENABLE_SETTING',
+	'ANONYMOUS_ID', // 匿名用户 ID，用于多租户模式下区分不同的未登录用户
 ] as const
 
 export const LocalStorageKeys = LocalStorageKeyList.reduce(

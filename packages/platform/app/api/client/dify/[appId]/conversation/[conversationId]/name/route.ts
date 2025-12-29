@@ -27,7 +27,7 @@ export async function POST(
 		}
 
 		// 获取请求体
-		const { name, auto_generate } = await request.json()
+		const { name, auto_generate, user } = await request.json()
 
 		if (!conversationId) {
 			return createDifyApiResponse(
@@ -39,8 +39,8 @@ export async function POST(
 			)
 		}
 
-		// 获取用户ID
-		const userId = getUserIdFromRequest(request)
+		// 获取用户ID：优先使用请求体中的 user，否则从请求头获取
+		const userId = user || getUserIdFromRequest(request)
 
 		// 代理请求到 Dify API
 		const response = await proxyDifyRequest(

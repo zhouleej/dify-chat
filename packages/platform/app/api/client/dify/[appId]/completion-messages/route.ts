@@ -25,10 +25,10 @@ export async function POST(
 		}
 
 		// 获取请求体
-		const { inputs } = await request.json()
+		const { inputs, user } = await request.json()
 
-		// 获取用户ID
-		const userId = getUserIdFromRequest(request)
+		// 获取用户ID：优先使用请求体中的 user，否则从请求头获取
+		const userId = user || getUserIdFromRequest(request)
 
 		// 代理请求到 Dify API
 		const response = await fetch(`${app.requestConfig.apiBase}/completion-messages`, {

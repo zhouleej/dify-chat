@@ -1,3 +1,4 @@
+export * from './anonymous-user'
 export * from './base-request'
 export * from './id'
 export * from './gzip'
