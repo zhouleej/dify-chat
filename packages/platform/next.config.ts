@@ -16,6 +16,9 @@ const nextConfig: NextConfig = {
 						value:
 							'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, X-USER-ID, x-user-id, x-tenant-code',
 					},
+					// 允许 iframe 嵌入（用于多租户模式嵌入到其他系统）
+					{ key: 'X-Frame-Options', value: 'ALLOWALL' },
+					{ key: 'Content-Security-Policy', value: 'frame-ancestors *' },
 				],
 			},
 		]
